@@ -150,6 +150,16 @@ That means:
 - portable metadata assumptions
 - careful versioning
 
+
+## Code is read more often than it is written
+
+Optimize for the reader.
+A module should be understandable without tracing the entire program.
+Small, well-defined components are preferred over large, clever implementations.
+If the intent is not obvious, improve the design before adding comments.
+
+
+
 ## Design Identity
 
 `musicaudit` is best thought of as:
