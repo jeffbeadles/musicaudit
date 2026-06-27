@@ -1,4 +1,4 @@
-# musicaudit - Version 8.5
+# musicaudit - Version 8.6
 
 `musicaudit` is a read-only QA toolkit for curated digital music collections.
 
@@ -439,3 +439,25 @@ ERROR: XML file not found: /path/to/file.xml
 ```
 
 Added regression tests to ensure missing XML input does not produce a traceback.
+
+
+## Version 8.6
+
+Fixed `unknown-token` handling so tokens listed in the rule-specific
+configuration are treated as allowed tokens.
+
+Example:
+
+```yaml
+rules:
+  unknown-token:
+    allowed:
+      - LIVE
+      - DEMO
+      - REMASTER
+```
+
+These are now included in the effective known-token set used by analysis and
+will not be reported as unknown comment tokens.
+
+Added regression tests for this behavior.

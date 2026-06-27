@@ -58,6 +58,17 @@ def resolve_settings(args, config: Dict[str, Any]) -> Settings:
     known.add("FAV")
     known.update(getattr(args, "known_token", []) or [])
 
+    # Rule-specific allowed tokens are part of the effective token vocabulary.
+    # Example:
+    #
+    # rules:
+    #   unknown-token:
+    #     allowed:
+    #       - LIVE
+    #       - DEMO
+    unknown_token_cfg = rules_cfg.get("unknown-token", {}) or {}
+    known.update(unknown_token_cfg.get("allowed", []) or [])
+
     enabled = getattr(args, "rule", None) or config.get("enabled_rules")
     enabled_tuple = tuple(enabled) if enabled else None
 
