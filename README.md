@@ -1,12 +1,8 @@
-# musicaudit - v0.1.0
+# musicaudit - Version 8.5
 
 `musicaudit` is a read-only QA toolkit for curated digital music collections.
 
-    * Read-only by default.
-    * Files are the source of truth.
-    * Apple Music XML is one provider, not the product.
-    * Rules validate; they do not repair.
-    * Every bug gets a regression test.
+Version 7 adds automatic rule discovery.
 
 Each rule now lives in its own module under `musicaudit/rules/`.
 Rules self-register with the rule engine using `@register_rule`.
@@ -424,3 +420,22 @@ A helper script is also included:
 ```bash
 ./run_tests.sh
 ```
+
+
+## Version 8.5
+
+Fixed user-facing error handling when the XML input file does not exist.
+
+Previously, commands could show a Python traceback after reporting:
+
+```text
+XML file not found
+```
+
+Now the CLI catches user-facing `RuntimeError` exceptions and prints only:
+
+```text
+ERROR: XML file not found: /path/to/file.xml
+```
+
+Added regression tests to ensure missing XML input does not produce a traceback.

@@ -56,4 +56,8 @@ def main(argv=None) -> int:
         parser.print_help()
         return 2
 
-    return args.func(args)
+    try:
+        return args.func(args)
+    except RuntimeError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 2
