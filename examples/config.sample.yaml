@@ -1,0 +1,139 @@
+# musicaudit sample configuration
+#
+# Copy to:
+#   ~/.config/musicaudit/config.yaml
+#
+# All settings are optional. Values shown are examples.
+
+# ----------------------------------------------------------------------
+# Library
+# ----------------------------------------------------------------------
+
+# Default Apple Music/iTunes XML export.
+# Can always be overridden with --xml.
+library_xml: ~/Music/AppleMusic/Library.xml
+
+# ----------------------------------------------------------------------
+# General Options
+# ----------------------------------------------------------------------
+
+# Default bitrate threshold (kbps) used unless overridden by a rule
+# or the command line.
+low_bitrate: 256
+
+# How bitrate information is displayed.
+# Values:
+#   summary  - summarize ranges (recommended)
+#   all      - show every bitrate encountered
+bitrate_report: summary
+
+# Maximum number of detail rows shown in reports.
+# Use 0 to suppress details.
+max_details: 25
+
+# Additional globally-known comment tokens.
+#
+# FAV is always recognized automatically and does not need to be listed.
+known_tokens:
+  - LIVE
+  - DEMO
+  - REMASTER
+
+# Optional list of rules enabled by default.
+# If omitted, all rules are enabled.
+#
+# enabled_rules:
+#   - missing-rating
+#   - unknown-token
+#   - duplicate-track
+#   - low-bitrate
+
+# ----------------------------------------------------------------------
+# Rule Configuration
+# ----------------------------------------------------------------------
+
+rules:
+
+  # ------------------------------------------------------------
+  # Warn about tracks below a minimum bitrate.
+  # CLI --low-bitrate overrides this value.
+  # ------------------------------------------------------------
+  low-bitrate:
+    enabled: true
+
+    # Minimum acceptable bitrate (kbps)
+    minimum: 256
+
+    # Optional severity override
+    # INFO | WARN | ERROR
+    level: WARN
+
+  # ------------------------------------------------------------
+  # Detect comment tokens that are not recognized.
+  # ------------------------------------------------------------
+  unknown-token:
+    enabled: true
+
+    # Tokens that are valid for your collection.
+    #
+    # These become part of the effective known token list and
+    # will not be reported as unknown.
+    allowed:
+      - LIVE
+      - DEMO
+      - REMASTER
+
+    level: WARN
+
+  # ------------------------------------------------------------
+  # Tracks missing an S1-S5 rating.
+  # ------------------------------------------------------------
+  missing-rating:
+    enabled: true
+    level: ERROR
+
+  # ------------------------------------------------------------
+  # Duplicate tracks.
+  # ------------------------------------------------------------
+  duplicate-track:
+    enabled: true
+    level: WARN
+
+  # ------------------------------------------------------------
+  # Empty standard playlists.
+  #
+  # Empty Smart Playlists are intentionally ignored because many
+  # validation playlists are expected to be empty.
+  # ------------------------------------------------------------
+  empty-standard-playlist:
+    enabled: true
+    level: WARN
+
+# ----------------------------------------------------------------------
+# Notes
+# ----------------------------------------------------------------------
+#
+# Configuration precedence (highest to lowest):
+#
+#   1. Command-line options
+#   2. Rule-specific settings
+#   3. Global settings
+#   4. Built-in defaults
+#
+# Example:
+#
+#   musicaudit rules --low-bitrate 192
+#
+# overrides both:
+#
+#   low_bitrate: 256
+#
+# and:
+#
+#   rules:
+#     low-bitrate:
+#       minimum: 128
+#
+# The effective configuration can be displayed with:
+#
+#   musicaudit rules --show-config
