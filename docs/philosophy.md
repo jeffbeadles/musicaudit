@@ -158,6 +158,16 @@ A module should be understandable without tracing the entire program.
 Small, well-defined components are preferred over large, clever implementations.
 If the intent is not obvious, improve the design before adding comments.
 
+## Build from demonstrated need
+
+New features should be driven by repeated real-world use.
+
+Interesting ideas are recorded.
+
+Repeated pain points are implemented.
+
+The existence of an idea is not sufficient reason to add it.
+
 
 
 ## Design Identity

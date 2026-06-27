@@ -2,10 +2,26 @@
 
 `musicaudit` is a read-only QA toolkit for curated digital music collections.
 
-Version 7 adds automatic rule discovery.
+## Current Status
 
-Each rule now lives in its own module under `musicaudit/rules/`.
-Rules self-register with the rule engine using `@register_rule`.
+musicaudit is under active development.
+
+The current regression suite is based on both synthetic test libraries and
+real-world Apple Music libraries.
+
+Development is driven by validating actual collections rather than hypothetical
+examples.
+
+Current regression status:
+
+✓ 30 automated tests
+✓ Configuration precedence verified
+✓ Rule engine verified
+✓ JSON renderer verified
+✓ CLI verified
+✓ Real-world validation performed on a 4,500-track library
+
+
 
 ## Safety rule
 
