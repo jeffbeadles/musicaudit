@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Major Version</key>
+	<integer>1</integer>
+	<key>Minor Version</key>
+	<integer>1</integer>
+	<key>Application Version</key>
+	<string>1.0</string>
+	<key>Features</key>
+	<integer>5</integer>
+	<key>Music Folder</key>
+	<string>file://localhost/tmp/musicaudit/Music/</string>
+	<key>Library Persistent ID</key>
+	<string>TESTLIB</string>
+	<key>Tracks</key>
+	<dict>
+		<key>1</key>
+		<dict>
+			<key>Track ID</key>
+			<integer>1</integer>
+			<key>Persistent ID</key>
+			<string>AAA001</string>
+			<key>Track Type</key>
+			<string>File</string>
+			<key>Name</key>
+			<string>Five Star Favorite</string>
+			<key>Artist</key>
+			<string>Artist A</string>
+			<key>Album Artist</key>
+			<string>Artist A</string>
+			<key>Album</key>
+			<string>Album A</string>
+			<key>Genre</key>
+			<string>Rock</string>
+			<key>Kind</key>
+			<string>MPEG audio file</string>
+			<key>Comments</key>
+			<string>FAV S5</string>
+			<key>Bit Rate</key>
+			<integer>320</integer>
+			<key>Location</key>
+			<string>file://localhost/tmp/musicaudit/a.mp3</string>
+			<key>Play Count</key>
+			<integer>10</integer>
+			<key>Year</key>
+			<integer>2001</integer>
+		</dict>
+		<key>2</key>
+		<dict>
+			<key>Track ID</key>
+			<integer>2</integer>
+			<key>Persistent ID</key>
+			<string>AAA002</string>
+			<key>Track Type</key>
+			<string>File</string>
+			<key>Name</key>
+			<string>Unrated Song</string>
+			<key>Artist</key>
+			<string>Artist B</string>
+			<key>Album Artist</key>
+			<string>Artist B</string>
+			<key>Album</key>
+			<string>Album B</string>
+			<key>Genre</key>
+			<string>Pop</string>
+			<key>Kind</key>
+			<string>MPEG audio file</string>
+			<key>Comments</key>
+			<string></string>
+			<key>Bit Rate</key>
+			<integer>320</integer>
+			<key>Location</key>
+			<string>file://localhost/tmp/musicaudit/b.mp3</string>
+			<key>Play Count</key>
+			<integer>0</integer>
+			<key>Year</key>
+			<integer>2002</integer>
+		</dict>
+		<key>3</key>
+		<dict>
+			<key>Track ID</key>
+			<integer>3</integer>
+			<key>Persistent ID</key>
+			<string>AAA003</string>
+			<key>Track Type</key>
+			<string>File</string>
+			<key>Name</key>
+			<string>Low Bitrate Song</string>
+			<key>Artist</key>
+			<string>Artist C</string>
+			<key>Album Artist</key>
+			<string>Artist C</string>
+			<key>Album</key>
+			<string>Album C</string>
+			<key>Genre</key>
+			<string>Jazz</string>
+			<key>Kind</key>
+			<string>MPEG audio file</string>
+			<key>Comments</key>
+			<string>S3</string>
+			<key>Bit Rate</key>
+			<integer>64</integer>
+			<key>Location</key>
+			<string>file://localhost/tmp/musicaudit/c.mp3</string>
+			<key>Play Count</key>
+			<integer>5</integer>
+			<key>Year</key>
+			<integer>2003</integer>
+		</dict>
+		<key>4</key>
+		<dict>
+			<key>Track ID</key>
+			<integer>4</integer>
+			<key>Persistent ID</key>
+			<string>AAA004</string>
+			<key>Track Type</key>
+			<string>File</string>
+			<key>Name</key>
+			<string>Unknown Token Song</string>
+			<key>Artist</key>
+			<string>Artist D</string>
+			<key>Album Artist</key>
+			<string>Artist D</string>
+			<key>Album</key>
+			<string>Album D</string>
+			<key>Genre</key>
+			<string>Rock</string>
+			<key>Kind</key>
+			<string>MPEG audio file</string>
+			<key>Comments</key>
+			<string>S4 LIVE</string>
+			<key>Bit Rate</key>
+			<integer>256</integer>
+			<key>Location</key>
+			<string>file://localhost/tmp/musicaudit/d.mp3</string>
+			<key>Play Count</key>
+			<integer>2</integer>
+			<key>Year</key>
+			<integer>2004</integer>
+		</dict>
+		<key>5</key>
+		<dict>
+			<key>Track ID</key>
+			<integer>5</integer>
+			<key>Persistent ID</key>
+			<string>AAA005</string>
+			<key>Track Type</key>
+			<string>File</string>
+			<key>Name</key>
+			<string>Duplicate Song</string>
+			<key>Artist</key>
+			<string>Artist E</string>
+			<key>Album Artist</key>
+			<string>Artist E</string>
+			<key>Album</key>
+			<string>Album E</string>
+			<key>Genre</key>
+			<string>Rock</string>
+			<key>Kind</key>
+			<string>MPEG audio file</string>
+			<key>Comments</key>
+			<string>S2</string>
+			<key>Bit Rate</key>
+			<integer>192</integer>
+			<key>Location</key>
+			<string>file://localhost/tmp/musicaudit/e1.mp3</string>
+			<key>Play Count</key>
+			<integer>1</integer>
+			<key>Year</key>
+			<integer>2005</integer>
+		</dict>
+		<key>6</key>
+		<dict>
+			<key>Track ID</key>
+			<integer>6</integer>
+			<key>Persistent ID</key>
+			<string>AAA006</string>
+			<key>Track Type</key>
+			<string>File</string>
+			<key>Name</key>
+			<string>Duplicate Song</string>
+			<key>Artist</key>
+			<string>Artist E</string>
+			<key>Album Artist</key>
+			<string>Artist E</string>
+			<key>Album</key>
+			<string>Album E</string>
+			<key>Genre</key>
+			<string>Rock</string>
+			<key>Kind</key>
+			<string>MPEG audio file</string>
+			<key>Comments</key>
+			<string>S2</string>
+			<key>Bit Rate</key>
+			<integer>192</integer>
+			<key>Location</key>
+			<string>file://localhost/tmp/musicaudit/e2.mp3</string>
+			<key>Play Count</key>
+			<integer>1</integer>
+			<key>Year</key>
+			<integer>2005</integer>
+		</dict>
+	</dict>
+	<key>Playlists</key>
+	<array>
+		<dict>
+			<key>Name</key>
+			<string>Library</string>
+			<key>Playlist ID</key>
+			<integer>1</integer>
+			<key>Playlist Persistent ID</key>
+			<string>PL001</string>
+			<key>All Items</key>
+			<true/>
+			<key>Playlist Items</key>
+			<array>
+				<dict>
+					<key>Track ID</key>
+					<integer>1</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key>
+					<integer>2</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key>
+					<integer>3</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key>
+					<integer>4</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key>
+					<integer>5</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key>
+					<integer>6</integer>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Name</key>
+			<string>Validation - Needs Rating</string>
+			<key>Playlist ID</key>
+			<integer>2</integer>
+			<key>Playlist Persistent ID</key>
+			<string>PL002</string>
+			<key>Smart Info</key>
+			<data>
+			c21hcnQtaW5mbw==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			c21hcnQtY3JpdGVyaWE=
+			</data>
+			<key>Playlist Items</key>
+			<array/>
+		</dict>
+		<dict>
+			<key>Name</key>
+			<string>Empty Standard</string>
+			<key>Playlist ID</key>
+			<integer>3</integer>
+			<key>Playlist Persistent ID</key>
+			<string>PL003</string>
+			<key>Playlist Items</key>
+			<array/>
+		</dict>
+	</array>
+</dict>
+</plist>

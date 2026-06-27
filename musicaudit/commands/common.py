@@ -1,0 +1,27 @@
+from __future__ import annotations
+
+from ..providers.applemusic import load_library
+from ..analysis import audit_core
+from ..util.formatting import write_or_print
+
+
+def add_common_args(parser):
+    parser.add_argument("--config", help="Optional config file.")
+    parser.add_argument("--xml", help="Path to exported Apple Music/iTunes Library XML file.")
+    parser.add_argument("--markdown", "-o", help="Optional Markdown report output path.")
+    parser.add_argument("--known-token", action="append", default=[], help="Additional valid comment token.")
+
+
+def add_detail_args(parser):
+    parser.add_argument("--max-details", type=int, default=None, help="Maximum detailed rows per section. Use 0 to suppress details.")
+    parser.add_argument("--verbose", action="store_true", help="Shortcut for --max-details 100.")
+
+
+def apply_settings(args, library):
+    settings = library.settings
+    args.low_bitrate = settings.low_bitrate
+    args.low_bitrate_source = settings.low_bitrate_source
+    args.max_details = settings.max_details
+    if getattr(args, "bitrate_report", None) is None:
+        args.bitrate_report = settings.bitrate_report
+    return args
