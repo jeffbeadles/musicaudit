@@ -3,8 +3,7 @@ from __future__ import annotations
 import shutil
 import subprocess
 
-from .common import add_common_args, add_detail_args, apply_settings
-from ..providers.applemusic import load_library
+from .common import add_common_args, add_detail_args, apply_settings, load_library
 from ..reports.markdown import playlists_report
 from ..util.formatting import write_or_print
 

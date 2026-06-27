@@ -97,9 +97,9 @@ def extract_playlists(plist: Dict[str, Any]) -> List[Dict[str, Any]]:
 
 def load_library(args) -> Library:
     config = load_config(getattr(args, "config", None))
-    xml_arg = getattr(args, "xml", None) or config.get("library_xml")
+    xml_arg = getattr(args, "apple_library", None) or config.get("apple_library") or config.get("library_xml")
     if not xml_arg:
-        raise RuntimeError("--xml is required unless library_xml is set in config.")
+        raise RuntimeError("--apple-library is required unless apple_library is set in config.")
 
     xml_path = expand_path(xml_arg)
     if not xml_path.exists():

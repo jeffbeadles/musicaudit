@@ -114,7 +114,19 @@ def audit_core(library, scan_files: bool, low_bitrate: int) -> Dict[str, Any]:
         if br_int and br_int < low_bitrate:
             low_bitrate_tracks.append(t)
 
-        if scan_files and exists:
+        if t.get("filesystem_provider"):
+            if not t.get("audio_readable"):
+                mutagen_unreadable += 1
+            if t.get("embedded_has_lyrics"):
+                lyrics_count += 1
+            else:
+                lyrics_missing += 1
+            if t.get("embedded_has_artwork"):
+                artwork_count += 1
+            else:
+                artwork_missing += 1
+
+        elif scan_files and exists:
             details = read_audio_details(path)
             t["audio_details"] = details
             if not details["readable"]:

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from .common import add_common_args, apply_settings
-from ..providers.applemusic import load_library
+from .common import add_common_args, apply_settings, load_library
 from ..analysis import audit_core
 from ..reports.markdown import health_report, terse_health
 from ..util.formatting import write_or_print
@@ -9,6 +8,8 @@ from ..util.formatting import write_or_print
 
 def run(args) -> int:
     library = load_library(args)
+    if getattr(args, "provider", None) == "filesystem":
+        args.scan_files = True
     args = apply_settings(args, library)
     core = audit_core(library, args.scan_files, args.low_bitrate)
     report = terse_health(library, core, args.scan_files, args.low_bitrate) if args.terse else health_report(library, core, args.scan_files, args.low_bitrate)

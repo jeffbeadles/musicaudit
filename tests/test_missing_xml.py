@@ -4,7 +4,7 @@ from musicaudit.cli import main
 def test_missing_xml_reports_error_without_traceback(capsys, tmp_path):
     missing = tmp_path / "does_not_exist.xml"
 
-    code = main(["health", "--xml", str(missing)])
+    code = main(["health", "--apple-library", str(missing)])
     captured = capsys.readouterr()
 
     assert code == 2
@@ -18,7 +18,7 @@ def test_missing_xml_reports_error_without_traceback(capsys, tmp_path):
 def test_missing_xml_rules_reports_error_without_traceback(capsys, tmp_path):
     missing = tmp_path / "missing_library.xml"
 
-    code = main(["rules", "--xml", str(missing)])
+    code = main(["rules", "--apple-library", str(missing)])
     captured = capsys.readouterr()
 
     assert code == 2

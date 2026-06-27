@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from .common import add_common_args, add_detail_args, apply_settings
-from ..providers.applemusic import load_library
+from .common import add_common_args, add_detail_args, apply_settings, load_library
 from ..analysis import audit_core
 from ..reports.markdown import stats_report
 from ..util.formatting import write_or_print

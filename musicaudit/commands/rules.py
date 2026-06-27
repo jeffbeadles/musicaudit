@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from .common import add_common_args, add_detail_args, apply_settings
-from ..providers.applemusic import load_library
+from .common import add_common_args, add_detail_args, apply_settings, load_library
 from ..providers.audio import require_mutagen
 from ..analysis import audit_core
 from ..rules.engine import run_rules
@@ -14,6 +13,8 @@ def run(args) -> int:
     if args.scan_files:
         require_mutagen()
     library = load_library(args)
+    if getattr(args, "provider", None) == "filesystem":
+        args.scan_files = True
     args = apply_settings(args, library)
     enabled_rules = args.rule or library.config.get("enabled_rules")
     if getattr(args, "show_config", False):

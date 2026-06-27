@@ -1,27 +1,11 @@
-# musicaudit - Version 8.7
+# musicaudit - Version 8.9
 
 `musicaudit` is a read-only QA toolkit for curated digital music collections.
 
-## Current Status
+Version 7 adds automatic rule discovery.
 
-musicaudit is under active development.
-
-The current regression suite is based on both synthetic test libraries and
-real-world Apple Music libraries.
-
-Development is driven by validating actual collections rather than hypothetical
-examples.
-
-Current regression status:
-
-✓ 30 automated tests
-✓ Configuration precedence verified
-✓ Rule engine verified
-✓ JSON renderer verified
-✓ CLI verified
-✓ Real-world validation performed on a 4,500-track library
-
-
+Each rule now lives in its own module under `musicaudit/rules/`.
+Rules self-register with the rule engine using `@register_rule`.
 
 ## Safety rule
 
@@ -56,22 +40,22 @@ python3 -m pip install pyyaml
 Unzip the archive, then run:
 
 ```bash
-python3 -m musicaudit health --xml ~/Music/Library.xml
-python3 -m musicaudit summary --xml ~/Music/Library.xml --scan-files
-python3 -m musicaudit rules --xml ~/Music/Library.xml --scan-files
+python3 -m musicaudit health --apple-library ~/Music/Library.xml
+python3 -m musicaudit summary --apple-library ~/Music/Library.xml --scan-files
+python3 -m musicaudit rules --apple-library ~/Music/Library.xml --scan-files
 python3 -m musicaudit diff --old before.xml --new after.xml
 ```
 
 ## Commands
 
 ```bash
-python3 -m musicaudit health --xml ~/Music/Library.xml
-python3 -m musicaudit summary --xml ~/Music/Library.xml --scan-files
-python3 -m musicaudit tokens --xml ~/Music/Library.xml
-python3 -m musicaudit playlists --xml ~/Music/Library.xml
-python3 -m musicaudit stats --xml ~/Music/Library.xml
-python3 -m musicaudit rules --xml ~/Music/Library.xml --scan-files
-python3 -m musicaudit verify --xml ~/Music/Library.xml --scan-files
+python3 -m musicaudit health --apple-library ~/Music/Library.xml
+python3 -m musicaudit summary --apple-library ~/Music/Library.xml --scan-files
+python3 -m musicaudit tokens --apple-library ~/Music/Library.xml
+python3 -m musicaudit playlists --apple-library ~/Music/Library.xml
+python3 -m musicaudit stats --apple-library ~/Music/Library.xml
+python3 -m musicaudit rules --apple-library ~/Music/Library.xml --scan-files
+python3 -m musicaudit verify --apple-library ~/Music/Library.xml --scan-files
 python3 -m musicaudit diff --old before.xml --new after.xml
 ```
 
@@ -80,8 +64,8 @@ python3 -m musicaudit diff --old before.xml --new after.xml
 ## Terse output
 
 ```bash
-python3 -m musicaudit health --xml ~/Music/Library.xml --terse
-python3 -m musicaudit rules --xml ~/Music/Library.xml --scan-files --terse
+python3 -m musicaudit health --apple-library ~/Music/Library.xml --terse
+python3 -m musicaudit rules --apple-library ~/Music/Library.xml --scan-files --terse
 python3 -m musicaudit diff --old before.xml --new after.xml --terse
 ```
 
@@ -107,20 +91,20 @@ Empty Smart Playlists are not errors. They are often validation checks where zer
 Run selected rules only:
 
 ```bash
-python3 -m musicaudit rules --xml ~/Music/Library.xml --rule missing-rating
-python3 -m musicaudit rules --xml ~/Music/Library.xml --rule missing-rating --rule unknown-token
+python3 -m musicaudit rules --apple-library ~/Music/Library.xml --rule missing-rating
+python3 -m musicaudit rules --apple-library ~/Music/Library.xml --rule missing-rating --rule unknown-token
 ```
 
 Use `--strict` for scripting:
 
 ```bash
-python3 -m musicaudit rules --xml ~/Music/Library.xml --scan-files --strict
+python3 -m musicaudit rules --apple-library ~/Music/Library.xml --scan-files --strict
 ```
 
 By default, ERROR rules fail and WARN rules report but do not fail. Use this to make warnings fail too:
 
 ```bash
-python3 -m musicaudit rules --xml ~/Music/Library.xml --scan-files --fail-warnings --strict
+python3 -m musicaudit rules --apple-library ~/Music/Library.xml --scan-files --fail-warnings --strict
 ```
 
 ## Config file
@@ -135,7 +119,7 @@ Optional config locations:
 Example:
 
 ```yaml
-library_xml: ~/Music/Library.xml
+apple_library: ~/Music/Library.xml
 low_bitrate: 256
 bitrate_report: summary
 max_details: 25
@@ -291,7 +275,7 @@ This lets it apply the intended precedence correctly.
 Debug the resolved config with:
 
 ```bash
-python3 -m musicaudit rules --xml ~/Music/Library.xml --show-config
+python3 -m musicaudit rules --apple-library ~/Music/Library.xml --show-config
 ```
 
 Expected examples:
@@ -329,7 +313,7 @@ threshold before scanning the library so the count and label match.
 Check with:
 
 ```bash
-python3 -m musicaudit rules --xml ~/Music/Library.xml --show-config
+python3 -m musicaudit rules --apple-library ~/Music/Library.xml --show-config
 ```
 
 Look for:
@@ -484,8 +468,8 @@ Added regression tests for this behavior.
 Added valid JSON output for `rules` and `verify`:
 
 ```bash
-python3 -m musicaudit rules --xml Library.xml --rule missing-album-artist --format json
-python3 -m musicaudit verify --xml Library.xml --format json
+python3 -m musicaudit rules --apple-library Library.xml --rule missing-album-artist --format json
+python3 -m musicaudit verify --apple-library Library.xml --format json
 ```
 
 The JSON renderer emits only JSON to stdout and no Markdown or human-readable
@@ -493,3 +477,80 @@ header text. This makes it suitable for scripts and for tests that parse output
 with `json.loads()`.
 
 Added regression tests for `missing-album-artist` JSON output.
+
+
+## Version 8.8
+
+Added a filesystem provider.
+
+This allows tests and future reference libraries to be built directly from audio
+files instead of relying on Apple Music XML.
+
+Example:
+
+```bash
+python3 -m musicaudit rules --provider filesystem --path tests/reference-library/audio
+python3 -m musicaudit health --provider filesystem --path /path/to/music
+python3 -m musicaudit rules --provider filesystem --path /path/to/music --format json
+```
+
+The filesystem provider uses `mutagen` to read tags directly from audio files.
+
+This is intended to become the foundation for the long-term test reference
+library. Apple Music XML remains important, but primarily as an Apple Music
+compatibility provider.
+
+A helper script has been added:
+
+```bash
+scripts/generate_reference_library.sh
+```
+
+It uses `ffmpeg` to generate small redistributable dummy MP3 files for tests.
+
+
+Note: the filesystem provider handles common ffmpeg-generated MP3 comment
+metadata, including `TXXX:comment`, so generated reference files can be used
+for comment-token tests.
+
+
+## Version 8.9
+
+Renamed the Apple Music XML input option:
+
+```bash
+--xml
+```
+
+has been removed and replaced with:
+
+```bash
+--apple-library
+```
+
+Examples:
+
+```bash
+python3 -m musicaudit rules --apple-library Library.xml
+python3 -m musicaudit health --apple-library Library.xml
+```
+
+Filesystem input is now inferred from `--path`, so this works without explicitly
+specifying `--provider filesystem`:
+
+```bash
+python3 -m musicaudit rules --path /path/to/music
+```
+
+The older `library_xml` config key is still accepted as a compatibility fallback,
+but new configs should use:
+
+```yaml
+apple_library: ~/Music/Library.xml
+```
+
+Added regression tests for:
+
+- `--xml` being removed
+- `--apple-library` missing-file error handling
+- `--path` implying the filesystem provider
