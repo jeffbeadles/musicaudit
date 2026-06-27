@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Major Version</key>
+	<integer>1</integer>
+	<key>Minor Version</key>
+	<integer>1</integer>
+	<key>Application Version</key>
+	<string>1.0</string>
+	<key>Features</key>
+	<integer>5</integer>
+	<key>Music Folder</key>
+	<string>file://localhost/tmp/musicaudit/Music/</string>
+	<key>Library Persistent ID</key>
+	<string>MISSINGALBUMARTIST</string>
+	<key>Tracks</key>
+	<dict>
+		<key>1</key>
+		<dict>
+			<key>Track ID</key>
+			<integer>1</integer>
+			<key>Persistent ID</key>
+			<string>MAA001</string>
+			<key>Track Type</key>
+			<string>File</string>
+			<key>Name</key>
+			<string>Compilation Song 1</string>
+			<key>Artist</key>
+			<string>Artist One</string>
+			<key>Album</key>
+			<string>Compilation Album</string>
+			<key>Genre</key>
+			<string>Rock</string>
+			<key>Kind</key>
+			<string>MPEG audio file</string>
+			<key>Comments</key>
+			<string>S4</string>
+			<key>Bit Rate</key>
+			<integer>320</integer>
+			<key>Location</key>
+			<string>file://localhost/tmp/musicaudit/comp1.mp3</string>
+		</dict>
+		<key>2</key>
+		<dict>
+			<key>Track ID</key>
+			<integer>2</integer>
+			<key>Persistent ID</key>
+			<string>MAA002</string>
+			<key>Track Type</key>
+			<string>File</string>
+			<key>Name</key>
+			<string>Compilation Song 2</string>
+			<key>Artist</key>
+			<string>Artist Two</string>
+			<key>Album</key>
+			<string>Compilation Album</string>
+			<key>Genre</key>
+			<string>Rock</string>
+			<key>Kind</key>
+			<string>MPEG audio file</string>
+			<key>Comments</key>
+			<string>S4</string>
+			<key>Bit Rate</key>
+			<integer>320</integer>
+			<key>Location</key>
+			<string>file://localhost/tmp/musicaudit/comp2.mp3</string>
+		</dict>
+	</dict>
+	<key>Playlists</key>
+	<array/>
+</dict>
+</plist>

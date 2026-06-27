@@ -1,4 +1,4 @@
-# musicaudit - Version 8.6
+# musicaudit - Version 8.7
 
 `musicaudit` is a read-only QA toolkit for curated digital music collections.
 
@@ -461,3 +461,19 @@ These are now included in the effective known-token set used by analysis and
 will not be reported as unknown comment tokens.
 
 Added regression tests for this behavior.
+
+
+## Version 8.7
+
+Added valid JSON output for `rules` and `verify`:
+
+```bash
+python3 -m musicaudit rules --xml Library.xml --rule missing-album-artist --format json
+python3 -m musicaudit verify --xml Library.xml --format json
+```
+
+The JSON renderer emits only JSON to stdout and no Markdown or human-readable
+header text. This makes it suitable for scripts and for tests that parse output
+with `json.loads()`.
+
+Added regression tests for `missing-album-artist` JSON output.

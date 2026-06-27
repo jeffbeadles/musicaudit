@@ -6,6 +6,7 @@ from ..providers.audio import require_mutagen
 from ..analysis import audit_core
 from ..rules.engine import run_rules
 from ..reports.markdown import rules_report
+from ..reports.json import rules_json_report
 from ..util.formatting import write_or_print
 
 
@@ -33,7 +34,10 @@ def run(args) -> int:
         enabled_rules,
         low_bitrate_source=args.low_bitrate_source,
     )
-    report, code = rules_report(library, results, args.max_details, args.fail_warnings, args.terse)
+    if args.format == "json":
+        report, code = rules_json_report(library, results, args.fail_warnings)
+    else:
+        report, code = rules_report(library, results, args.max_details, args.fail_warnings, args.terse)
     write_or_print(report, args.markdown)
     return code if args.strict else 0
 
@@ -49,4 +53,5 @@ def register(sub):
     p.add_argument("--fail-warnings", action="store_true")
     p.add_argument("--rule", action="append")
     p.add_argument("--show-config", action="store_true", help="Show resolved configuration and exit.")
+    p.add_argument("--format", choices=["markdown", "json"], default="markdown", help="Output format.")
     p.set_defaults(func=run)
