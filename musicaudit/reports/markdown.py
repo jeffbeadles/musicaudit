@@ -89,24 +89,24 @@ def health_report(library, core, scan_files: bool, low_bitrate: int) -> str:
     lines += [
         "## Health Check",
         "",
-        f"- Songs: **{fmt_int(len(library.tracks))}**",
-        f"- Artists: **{fmt_int(len(core['artists']))}**",
-        f"- Albums: **{fmt_int(len(core['albums']))}**",
-        f"- Playlists: **{fmt_int(len(library.playlists))}**",
-        f"- Smart playlists: **{fmt_int(core['smart_count'])}**",
-        f"- Empty smart playlists: **{fmt_int(empty_smart)}**",
-        f"- Empty standard playlists: **{fmt_int(empty_standard)}**",
-        f"- Missing files: **{fmt_int(len(core['file_missing']))}**",
-        f"- Missing S# ratings: **{fmt_int(len(core['unrated_tracks']))}**",
-        f"- Invalid/multiple S# ratings: **{fmt_int(len(core['invalid_tracks']))}**",
-        f"- Duplicate Artist/Album/Title groups: **{fmt_int(len(core['duplicates']))}**",
-        f"- Low bitrate tracks below {low_bitrate} kbps: **{fmt_int(len(core['low_bitrate_tracks']))}**",
+        f"- Songs: {fmt_int(len(library.tracks))}",
+        f"- Artists: {fmt_int(len(core['artists']))}",
+        f"- Albums: {fmt_int(len(core['albums']))}",
+        f"- Playlists: {fmt_int(len(library.playlists))}",
+        f"- Smart playlists: {fmt_int(core['smart_count'])}",
+        f"- Empty smart playlists: {fmt_int(empty_smart)}",
+        f"- Empty standard playlists: {fmt_int(empty_standard)}",
+        f"- Missing files: {fmt_int(len(core['file_missing']))}",
+        f"- Missing S# ratings: {fmt_int(len(core['unrated_tracks']))}",
+        f"- Invalid/multiple S# ratings: {fmt_int(len(core['invalid_tracks']))}",
+        f"- Duplicate Artist/Album/Title groups: {fmt_int(len(core['duplicates']))}",
+        f"- Low bitrate tracks below {low_bitrate} kbps: {fmt_int(len(core['low_bitrate_tracks']))}",
     ]
     if scan_files:
         lines += [
-            f"- Missing embedded lyrics: **{fmt_int(core['lyrics_missing'])}**",
-            f"- Missing embedded artwork: **{fmt_int(core['artwork_missing'])}**",
-            f"- XML/file tag mismatches: **{fmt_int(len(core['tag_mismatches']))}**",
+            f"- Missing embedded lyrics: {fmt_int(core['lyrics_missing'])}",
+            f"- Missing embedded artwork: {fmt_int(core['artwork_missing'])}",
+            f"- XML/file tag mismatches: {fmt_int(len(core['tag_mismatches']))}",
         ]
     lines.append("")
     return "\n".join(lines)
@@ -160,14 +160,14 @@ def summary_report(library, core, scan_files: bool, bitrate_report_mode: str, lo
     for i in range(5, 0, -1):
         key = f"S{i}"
         count = core["rating_counts"][key]
-        lines.append(f"- {key}: **{fmt_int(count)}** ({fmt_percent(count, total)})")
-    lines.append(f"- Unrated / missing S#: **{fmt_int(len(core['unrated_tracks']))}** ({fmt_percent(len(core['unrated_tracks']), total)})")
-    lines.append(f"- FAV: **{fmt_int(core['favorites'])}** ({fmt_percent(core['favorites'], total)})")
+        lines.append(f"- {key}: {fmt_int(count)} ({fmt_percent(count, total)})")
+    lines.append(f"- Unrated / missing S#: {fmt_int(len(core['unrated_tracks']))} ({fmt_percent(len(core['unrated_tracks']), total)})")
+    lines.append(f"- FAV: {fmt_int(core['favorites'])} ({fmt_percent(core['favorites'], total)})")
     lines.append("")
 
     lines += ["## Formats", ""]
     for ext, count in core["ext_counts"].most_common():
-        lines.append(f"- {ext}: **{fmt_int(count)}**")
+        lines.append(f"- {ext}: {fmt_int(count)}")
     lines.append("")
 
     append_bitrate(lines, library.tracks, bitrate_report_mode, low_bitrate)
@@ -175,11 +175,11 @@ def summary_report(library, core, scan_files: bool, bitrate_report_mode: str, lo
     lines += ["## Embedded Metadata from Actual Files", ""]
     if scan_files:
         lines += [
-            f"- Lyrics embedded: **{fmt_int(core['lyrics_count'])}**",
-            f"- Lyrics missing: **{fmt_int(core['lyrics_missing'])}**",
-            f"- Artwork embedded: **{fmt_int(core['artwork_count'])}**",
-            f"- Artwork missing: **{fmt_int(core['artwork_missing'])}**",
-            f"- Files unreadable by mutagen: **{fmt_int(core['mutagen_unreadable'])}**",
+            f"- Lyrics embedded: {fmt_int(core['lyrics_count'])}",
+            f"- Lyrics missing: {fmt_int(core['lyrics_missing'])}",
+            f"- Artwork embedded: {fmt_int(core['artwork_count'])}",
+            f"- Artwork missing: {fmt_int(core['artwork_missing'])}",
+            f"- Files unreadable by mutagen: {fmt_int(core['mutagen_unreadable'])}",
             "",
         ]
     else:
@@ -212,7 +212,7 @@ def append_bitrate(lines, tracks, mode: str, low_bitrate: int):
         lines += ["## Bitrate Summary", ""]
         for key in ["Lossless / Hi-Res", "320 kbps and above", "256-319 kbps", f"{low_bitrate}-255 kbps", f"Below {low_bitrate} kbps", "unknown"]:
             if summary_counts[key]:
-                lines.append(f"- {key}: **{fmt_int(summary_counts[key])}**")
+                lines.append(f"- {key}: {fmt_int(summary_counts[key])}")
         lines.append("")
     elif mode == "exceptions":
         lines += [f"## Low Bitrate Exceptions Below {low_bitrate} kbps", ""]
@@ -220,12 +220,12 @@ def append_bitrate(lines, tracks, mode: str, low_bitrate: int):
             lines.append("- None")
         else:
             for label, count in sorted(low_counts.items()):
-                lines.append(f"- {label}: **{fmt_int(count)}**")
+                lines.append(f"- {label}: {fmt_int(count)}")
         lines.append("")
     elif mode == "full":
         lines += ["## Bitrates from Apple Music XML", ""]
         for label, count in sorted(all_counts.items()):
-            lines.append(f"- {label}: **{fmt_int(count)}**")
+            lines.append(f"- {label}: {fmt_int(count)}")
         lines.append("")
 
 
@@ -236,9 +236,9 @@ def tokens_report(library, core, max_details: int) -> str:
     for i in range(5, 0, -1):
         key = f"S{i}"
         count = core["rating_counts"][key]
-        lines.append(f"- {key}: **{fmt_int(count)}** ({fmt_percent(count, total)})")
-    lines.append(f"- Missing S#: **{fmt_int(len(core['unrated_tracks']))}** ({fmt_percent(len(core['unrated_tracks']), total)})")
-    lines.append(f"- FAV: **{fmt_int(core['favorites'])}** ({fmt_percent(core['favorites'], total)})")
+        lines.append(f"- {key}: {fmt_int(count)} ({fmt_percent(count, total)})")
+    lines.append(f"- Missing S#: {fmt_int(len(core['unrated_tracks']))} ({fmt_percent(len(core['unrated_tracks']), total)})")
+    lines.append(f"- FAV: {fmt_int(core['favorites'])} ({fmt_percent(core['favorites'], total)})")
     lines.append("")
     append_details(lines, core, 256, max_details)
     return "\n".join(lines)
@@ -257,12 +257,12 @@ def playlists_report(library, decode_output: str | None, max_details: int) -> st
     lines += [
         "## Playlist Summary",
         "",
-        f"- Total playlists: **{fmt_int(len(playlists))}**",
-        f"- Smart playlists: **{fmt_int(len(smart))}**",
-        f"- Standard playlists: **{fmt_int(len(standard))}**",
-        f"- Playlist folders: **{fmt_int(len(folders))}**",
-        f"- Empty smart playlists: **{fmt_int(len(empty_smart))}**",
-        f"- Empty standard playlists: **{fmt_int(len(empty_standard))}**",
+        f"- Total playlists: {fmt_int(len(playlists))}",
+        f"- Smart playlists: {fmt_int(len(smart))}",
+        f"- Standard playlists: {fmt_int(len(standard))}",
+        f"- Playlist folders: {fmt_int(len(folders))}",
+        f"- Empty smart playlists: {fmt_int(len(empty_smart))}",
+        f"- Empty standard playlists: {fmt_int(len(empty_standard))}",
         "",
         "## Smart Playlist Inventory",
         "",
@@ -291,12 +291,12 @@ def stats_report(library, core, max_details: int, histogram_scale: str, histogra
     rating_values = [v for v in core["rating_values"] if isinstance(v, int)]
     avg_rating = sum(rating_values) / len(rating_values) if rating_values else 0
 
-    lines += ["## Ratings", "", f"- Average rating: **{avg_rating:.2f}**"]
+    lines += ["## Ratings", "", f"- Average rating: {avg_rating:.2f}"]
     if rating_values:
         sorted_vals = sorted(rating_values)
         mid = len(sorted_vals) // 2
         median = sorted_vals[mid] if len(sorted_vals) % 2 else (sorted_vals[mid - 1] + sorted_vals[mid]) / 2
-        lines.append(f"- Median rating: **{median:.1f}**")
+        lines.append(f"- Median rating: {median:.1f}")
     lines.append("")
 
     lines += ["### Rating Histogram", "", f"Scale: `{histogram_scale}`", ""]
@@ -310,13 +310,13 @@ def stats_report(library, core, max_details: int, histogram_scale: str, histogra
 
     lines += ["## Formats", ""]
     for ext, count in core["ext_counts"].most_common():
-        lines.append(f"- {ext}: **{fmt_int(count)}**")
+        lines.append(f"- {ext}: {fmt_int(count)}")
     lines.append("")
 
     genres = collections.Counter(t.get("genre") or "unknown" for t in library.tracks)
     lines += [f"## Top Genres, First {max_details}", ""]
     for genre, count in genres.most_common(max_details):
-        lines.append(f"- {genre}: **{fmt_int(count)}**")
+        lines.append(f"- {genre}: {fmt_int(count)}")
     lines.append("")
 
     return "\n".join(lines)

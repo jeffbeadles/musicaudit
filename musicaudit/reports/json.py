@@ -95,3 +95,195 @@ def rules_json_report(library, rules, fail_warnings: bool) -> tuple[str, int]:
     }
 
     return json.dumps(payload, indent=2, sort_keys=True) + "\n", 1 if failed else 0
+
+
+
+def library_ref(library) -> dict:
+    return {
+        "source": str(library.xml_path),
+        "provider": getattr(getattr(library, "settings", None), "provider", None),
+    }
+
+
+def core_summary(library, core, scan_files: bool, low_bitrate: int) -> dict:
+    empty_smart = len([p for p in core["empty_playlists"] if p["is_smart"]])
+    empty_standard = len([p for p in core["empty_playlists"] if not p["is_smart"]])
+
+    payload = {
+        "tracks": len(library.tracks),
+        "artists": len(core["artists"]),
+        "albums": len(core["albums"]),
+        "playlists": len(library.playlists),
+        "smart_playlists": core["smart_count"],
+        "empty_smart_playlists": empty_smart,
+        "empty_standard_playlists": empty_standard,
+        "missing_files": len(core["file_missing"]),
+        "missing_ratings": len(core["unrated_tracks"]),
+        "invalid_ratings": len(core["invalid_tracks"]),
+        "duplicate_groups": len(core["duplicates"]),
+        "low_bitrate": {
+            "threshold_kbps": low_bitrate,
+            "count": len(core["low_bitrate_tracks"]),
+        },
+    }
+
+    if scan_files:
+        payload["embedded"] = {
+            "lyrics_present": core["lyrics_count"],
+            "lyrics_missing": core["lyrics_missing"],
+            "artwork_present": core["artwork_count"],
+            "artwork_missing": core["artwork_missing"],
+            "unreadable_files": core["mutagen_unreadable"],
+            "tag_mismatches": len(core["tag_mismatches"]),
+        }
+
+    return payload
+
+
+def health_json_report(library, core, scan_files: bool, low_bitrate: int) -> tuple[str, int]:
+    fail_checks = [
+        len(core["file_missing"]),
+        len(core["unrated_tracks"]),
+        len(core["invalid_tracks"]),
+    ]
+    if scan_files:
+        fail_checks.append(core["mutagen_unreadable"])
+
+    status = "FAIL" if any(x > 0 for x in fail_checks) else "PASS"
+    payload = {
+        "status": status,
+        "library": {
+            "source": str(library.xml_path),
+        },
+        "health": core_summary(library, core, scan_files, low_bitrate),
+    }
+    return json.dumps(payload, indent=2, sort_keys=True) + "\n", 1 if status == "FAIL" else 0
+
+
+def bitrate_summary(tracks, low_bitrate: int) -> dict:
+    from ..analysis import bitrate_bucket, bitrate_label
+    import collections
+
+    summary_counts = collections.Counter()
+    all_counts = collections.Counter()
+    low_counts = collections.Counter()
+
+    for t in tracks:
+        br = t.get("bit_rate")
+        summary_counts[bitrate_bucket(br, low_bitrate)] += 1
+        all_counts[bitrate_label(br)] += 1
+        try:
+            br_int = int(br) if br else 0
+        except Exception:
+            br_int = 0
+        if br_int and br_int < low_bitrate:
+            low_counts[bitrate_label(br)] += 1
+
+    return {
+        "summary": dict(sorted(summary_counts.items())),
+        "all": dict(sorted(all_counts.items())),
+        "below_threshold": dict(sorted(low_counts.items())),
+    }
+
+
+def summary_json_report(library, core, scan_files: bool, low_bitrate: int) -> tuple[str, int]:
+    total = len(library.tracks)
+    payload = {
+        "status": "OK",
+        "library": {
+            "source": str(library.xml_path),
+        },
+        "health": core_summary(library, core, scan_files, low_bitrate),
+        "ratings": {
+            f"S{i}": core["rating_counts"][f"S{i}"] for i in range(5, 0, -1)
+        },
+        "unrated": len(core["unrated_tracks"]),
+        "favorites": core["favorites"],
+        "formats": dict(core["ext_counts"].most_common()),
+        "bitrates": bitrate_summary(library.tracks, low_bitrate),
+    }
+
+    if total:
+        payload["rating_percentages"] = {
+            f"S{i}": round((core["rating_counts"][f"S{i}"] / total) * 100, 2)
+            for i in range(5, 0, -1)
+        }
+        payload["rating_percentages"]["unrated"] = round((len(core["unrated_tracks"]) / total) * 100, 2)
+        payload["rating_percentages"]["favorites"] = round((core["favorites"] / total) * 100, 2)
+
+    if scan_files:
+        payload["embedded"] = {
+            "lyrics_present": core["lyrics_count"],
+            "lyrics_missing": core["lyrics_missing"],
+            "artwork_present": core["artwork_count"],
+            "artwork_missing": core["artwork_missing"],
+            "unreadable_files": core["mutagen_unreadable"],
+            "tag_mismatches": len(core["tag_mismatches"]),
+        }
+
+    return json.dumps(json_safe(payload), indent=2, sort_keys=True) + "\n", 0
+
+
+def diff_json_report(old_input, new_input, d) -> tuple[str, int]:
+    def change_track_pair(pair):
+        o, n = pair[0], pair[1]
+        return {
+            "old": compact_track(o),
+            "new": compact_track(n),
+        }
+
+    payload = {
+        "status": "NO_CHANGES",
+        "old": str(old_input),
+        "new": str(new_input),
+        "summary": {
+            "new_songs": len(d["added"]),
+            "removed_songs": len(d["removed"]),
+            "rating_changes_existing": len(d["rating_changed"]),
+            "fav_changes_existing": len(d["fav_changed"]),
+            "new_favorites": len(d["added_favorites"]),
+            "removed_favorites": len(d["removed_favorites"]),
+            "comment_changes": len(d["comments_changed"]),
+            "path_changes": len(d["path_changed"]),
+            "title_artist_album_changes": len(d["title_changed"]),
+            "new_playlists": len(d["playlist_added"]),
+            "removed_playlists": len(d["playlist_removed"]),
+            "smart_playlist_changes": len(d["smart_changed"]),
+        },
+        "items": {
+            "new_songs": [compact_track(t) for t in d["added"]],
+            "removed_songs": [compact_track(t) for t in d["removed"]],
+            "new_favorites": [compact_track(t) for t in d["added_favorites"]],
+            "removed_favorites": [compact_track(t) for t in d["removed_favorites"]],
+            "rating_changes": [
+                {
+                    "track": compact_track(n),
+                    "old_rating": old_rating,
+                    "new_rating": new_rating,
+                }
+                for o, n, old_rating, new_rating in d["rating_changed"]
+            ],
+            "favorite_changes": [
+                {
+                    "track": compact_track(n),
+                    "old_favorite": old_fav,
+                    "new_favorite": new_fav,
+                }
+                for o, n, old_fav, new_fav in d["fav_changed"]
+            ],
+            "comment_changes": [change_track_pair(pair) for pair in d["comments_changed"]],
+            "path_changes": [change_track_pair(pair) for pair in d["path_changed"]],
+            "title_artist_album_changes": [change_track_pair(pair) for pair in d["title_changed"]],
+            "new_playlists": [json_safe(p) for p in d["playlist_added"]],
+            "removed_playlists": [json_safe(p) for p in d["playlist_removed"]],
+            "smart_playlist_changes": [
+                {"old": json_safe(o), "new": json_safe(n)}
+                for o, n in d["smart_changed"]
+            ],
+        },
+    }
+
+    if any(payload["summary"].values()):
+        payload["status"] = "CHANGES"
+
+    return json.dumps(json_safe(payload), indent=2, sort_keys=True) + "\n", 0

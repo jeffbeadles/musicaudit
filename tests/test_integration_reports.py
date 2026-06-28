@@ -17,10 +17,10 @@ def run_main(args, capsys):
 def test_health_fixture_reports_expected_counts(capsys):
     code, output = run_main(["health", "--apple-library", str(FIXTURE)], capsys)
     assert code == 0
-    assert "Songs: **6**" in output
-    assert "Missing S# ratings: **1**" in output
-    assert "Empty smart playlists: **1**" in output
-    assert "Empty standard playlists: **1**" in output
+    assert "Songs: 6" in output
+    assert "Missing S# ratings: 1" in output
+    assert "Empty smart playlists: 1" in output
+    assert "Empty standard playlists: 1" in output
 
 
 def test_rules_fixture_reports_expected_failures(capsys):
@@ -55,7 +55,7 @@ def test_low_bitrate_fixture_config_file(tmp_path, capsys):
 def test_diff_reports_new_favorite(capsys):
     code, output = run_main(["diff", "--old", str(FIXTURE), "--new", str(FIXTURE_AFTER)], capsys)
     assert code == 0
-    assert "New songs with FAV: **1**" in output
+    assert "New songs with FAV: 1" in output
     assert "New Favorite" in output
 
 

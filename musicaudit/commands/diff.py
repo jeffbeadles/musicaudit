@@ -7,6 +7,7 @@ from ..providers.applemusic import read_plist, extract_tracks, extract_playlists
 from ..util.config import expand_path, load_config
 from ..util.formatting import fmt_int, write_or_print
 from ..reports.markdown import header
+from ..reports.json import diff_json_report
 
 
 def track_key(t):
@@ -122,18 +123,18 @@ def verbose_diff(old_xml, new_xml, d) -> str:
     lines = header("Music Library Diff")
     lines += [f"Old XML: `{old_xml}`", f"New XML: `{new_xml}`", "", "## Summary", ""]
     lines += [
-        f"- New songs: **{fmt_int(len(d['added']))}**",
-        f"- Removed songs: **{fmt_int(len(d['removed']))}**",
-        f"- Rating changes on existing songs: **{fmt_int(len(d['rating_changed']))}**",
-        f"- FAV changes on existing songs: **{fmt_int(len(d['fav_changed']))}**",
-        f"- New songs with FAV: **{fmt_int(len(d['added_favorites']))}**",
-        f"- Removed songs with FAV: **{fmt_int(len(d['removed_favorites']))}**",
-        f"- Comment changes: **{fmt_int(len(d['comments_changed']))}**",
-        f"- Path changes: **{fmt_int(len(d['path_changed']))}**",
-        f"- Title/artist/album changes: **{fmt_int(len(d['title_changed']))}**",
-        f"- New playlists: **{fmt_int(len(d['playlist_added']))}**",
-        f"- Removed playlists: **{fmt_int(len(d['playlist_removed']))}**",
-        f"- Smart playlist changes: **{fmt_int(len(d['smart_changed']))}**",
+        f"- New songs: {fmt_int(len(d['added']))}",
+        f"- Removed songs: {fmt_int(len(d['removed']))}",
+        f"- Rating changes on existing songs: {fmt_int(len(d['rating_changed']))}",
+        f"- FAV changes on existing songs: {fmt_int(len(d['fav_changed']))}",
+        f"- New songs with FAV: {fmt_int(len(d['added_favorites']))}",
+        f"- Removed songs with FAV: {fmt_int(len(d['removed_favorites']))}",
+        f"- Comment changes: {fmt_int(len(d['comments_changed']))}",
+        f"- Path changes: {fmt_int(len(d['path_changed']))}",
+        f"- Title/artist/album changes: {fmt_int(len(d['title_changed']))}",
+        f"- New playlists: {fmt_int(len(d['playlist_added']))}",
+        f"- Removed playlists: {fmt_int(len(d['playlist_removed']))}",
+        f"- Smart playlist changes: {fmt_int(len(d['smart_changed']))}",
         "",
     ]
 
@@ -181,6 +182,10 @@ def run(args) -> int:
         known_tokens,
     )
 
+    if args.format == "json":
+        report, code = diff_json_report(old_xml, new_xml, d)
+        return write_or_print(report, args.markdown) or code
+
     report = terse_diff(d) if args.terse else verbose_diff(old_xml, new_xml, d)
     return write_or_print(report, args.markdown)
 
@@ -193,4 +198,5 @@ def register(sub):
     p.add_argument("--markdown", "-o")
     p.add_argument("--known-token", action="append", default=[])
     p.add_argument("--terse", action="store_true")
+    p.add_argument("--format", choices=["markdown", "json"], default="markdown")
     p.set_defaults(func=run)

@@ -48,9 +48,9 @@ def test_summary_bitrate_bucket_matches_low_bitrate_rule(tmp_path, capsys):
     summary_out = capsys.readouterr().out
     assert code == 0
 
-    assert "Below 64 kbps: **0**" not in summary_out
-    assert "Below 64 kbps: **3**" not in summary_out
-    assert "64-255 kbps: **3**" in summary_out
+    assert "Below 64 kbps: 0" not in summary_out
+    assert "Below 64 kbps: 3" not in summary_out
+    assert "64-255 kbps: 3" in summary_out
 
 
 def test_summary_bitrate_bucket_reports_true_low_bitrate(tmp_path, capsys):
@@ -66,4 +66,4 @@ def test_summary_bitrate_bucket_reports_true_low_bitrate(tmp_path, capsys):
     ])
     summary_out = capsys.readouterr().out
     assert code == 0
-    assert "Below 64 kbps: **1**" in summary_out
+    assert "Below 64 kbps: 1" in summary_out
