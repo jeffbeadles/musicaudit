@@ -10,6 +10,11 @@ Its purpose is to determine the health of a music collection and report its find
 
 It intentionally does not modify collections. Instead, it provides stable human-readable and machine-readable output that can be consumed by other software.
 
+Reduce the cost of maintaining a high-quality music collection.
+
+A collection should be easy to validate at any time. By making problems inexpensive to find, users can focus their effort on correcting them rather than discovering them.
+
+
 It is not a music player.
 It is not a tag editor.
 It is not a library manager.
