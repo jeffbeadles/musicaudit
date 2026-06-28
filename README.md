@@ -11,9 +11,16 @@ music files or library databases.
 
 ## Safety rule
 
-`musicaudit` is read-only.
+Security
 
-It does not modify music files, tags, XML files, playlists, ratings, lyrics, artwork, or file locations.
+musicaudit is designed to operate with read-only access to your music
+collection.
+
+It never modifies music files or library databases.
+
+For additional assurance, you may grant the tool read-only permissions
+to the music collection.
+
 
 ## Install optional dependencies
 

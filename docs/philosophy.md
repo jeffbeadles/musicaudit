@@ -1,6 +1,14 @@
+*** NOTE: This needs a lot of updating.
+
 # musicaudit Philosophy
 
 `musicaudit` exists to help protect and validate curated digital music collections.
+
+musicaudit is a read-only validation engine for digital music collections.
+
+Its purpose is to determine the health of a music collection and report its findings completely and accurately.
+
+It intentionally does not modify collections. Instead, it provides stable human-readable and machine-readable output that can be consumed by other software.
 
 It is not a music player.
 It is not a tag editor.
@@ -9,21 +17,34 @@ It is not intended to own the user's data.
 
 It is an audit and quality assurance tool.
 
+## Project Contracts
+
+Several aspects of musicaudit are considered contractual rather than
+implementation details.
+
+### Read-only Contract
+
+musicaudit will never modify music collections.
+
+Users should be able to execute any musicaudit command with complete confidence
+that their collection will remain unchanged.
+
+### JSON Compatibility Contract
+
+The JSON output is intended to be consumed by other software.
+
+Existing field meanings and rule identifiers will remain stable.
+
+Future releases may add new fields, but existing consumers should continue to
+function without modification.
+
 ## Core Principles
 
-### 1. Read-only by default
+### 1. Read-only, period.
 
-`musicaudit` must never modify music files, tags, playlists, XML files, artwork, lyrics, filenames, or directory structures unless the user explicitly runs a clearly write-oriented command.
+`musicaudit` must never modify music files, tags, playlists, XML files, artwork, lyrics, filenames, or directory structures.
 
 Audit commands must be safe to run at any time.
-
-If write-capable commands are ever added, they should:
-
-- live under an obviously separate command namespace
-- default to dry-run behavior
-- show exactly what would change
-- require explicit user confirmation or flags before writing
-- never be mixed into ordinary audit commands
 
 ### 2. The music files are the source of truth
 
@@ -33,15 +54,12 @@ Apple Music, iTunes XML, playlists, databases, and sync tools are derived views 
 
 `musicaudit` should prefer facts measured from the files themselves whenever possible.
 
-### 3. Apple Music XML is a provider, not the product
+### 3. There are two providers, Apple Music (--apple-library) and the
+filesystem (--path) . Both are simply providers, used read-only for informatoin.
 
-Apple Music XML is currently the first provider because it is useful and available.
-
-It should not define the long-term architecture.
 
 Future providers may include:
 
-- filesystem scans
 - beets databases
 - MusicBrainz/Picard metadata
 - other music library exports
@@ -77,21 +95,18 @@ Result objects
    |
 Renderers
    |-- terminal
-   |-- markdown
    |-- json
-   |-- csv
-   |-- yaml
 ```
 
-JSON should be the primary machine-readable format.
+JSON is the primary machine-readable format.
 
-Markdown and terminal output should be optimized for humans.
+Terminal output should be optimized for humans.
 
 ### 6. Every bug deserves a regression test
 
 If a bug is found, the fix is not complete until there is a test that would have caught it.
 
-Examples from early development:
+Every bug found in early development had a test created for it, including
 
 - low-bitrate threshold mismatch between config and rules
 - verify alias missing parser options
@@ -138,15 +153,15 @@ What needs attention?
 
 Digital music collections often live for decades.
 
-`musicaudit` should be designed for long-term maintenance, not short-term convenience.
+`musicaudit` is designed for long-term maintenance, not short-term convenience.
 
-That means:
+This means:
 
 - stable CLI behavior
 - clear configuration
 - strong tests
 - predictable output
-- no hidden writes
+- no writes, ever
 - portable metadata assumptions
 - careful versioning
 
@@ -175,7 +190,7 @@ The existence of an idea is not sufficient reason to add it.
 `musicaudit` is best thought of as:
 
 ```text
-fsck for digital music collections
+fsck -n for digital music collections
 ```
 
 or:
@@ -188,7 +203,7 @@ It should help users understand the state of their collection before syncing, ba
 
 ## Non-Goals
 
-`musicaudit` should not try to become:
+`musicaudit` will not try to become:
 
 - a music player
 - a streaming client
