@@ -1,26 +1,19 @@
-# musicaudit - Version 9.1
+# musicaudit - Version 9.2
 
-musicaudit makes finding issues in a music collection trivially fast and easy, so you can spend your time improving the collection instead of searching for problems.
+`musicaudit` is a read-only QA toolkit for curated digital music collections.
 
-It analyzes collections and reports their health without making changes to
-music files or library databases.
+Version 7 adds automatic rule discovery.
 
-musicaudit validates the contents of a music collection. It does not acquire, modify, or redistribute copyrighted content.
-
-
+Each rule now lives in its own module under `musicaudit/rules/`.
+Rules self-register with the rule engine using `@register_rule`.
 
 ## Safety rule
 
-Security
+`musicaudit` is read-only.
 
-musicaudit is designed to operate with read-only access to your music
-collection.
+It does not modify music files, tags, XML files, playlists, ratings, lyrics, artwork, or file locations.
 
-It never modifies music files or library databases.
-
-For additional assurance, you may grant the tool read-only permissions
-to the music collection.
-
+Future write-capable features, if ever added, should require explicit write-oriented commands and confirmation. The default mode of this project is audit, validate, compare, and report.
 
 ## Install optional dependencies
 
@@ -578,3 +571,19 @@ These rules now return the actual matching track objects, making JSON output
 useful for scripts and debugging.
 
 Added regression tests for missing artwork and missing lyrics JSON output.
+
+
+## Version 9.2
+
+Fixed bitrate summary bucket labeling.
+
+`musicaudit summary` incorrectly grouped tracks below 256 kbps into the
+`Below <threshold> kbps` bucket, even when those tracks were above the configured
+low-bitrate threshold.
+
+For example, with `--low-bitrate 64`, 192 kbps tracks were incorrectly reported
+as below 64 kbps. They are now reported in a separate `64-255 kbps` bucket, and
+only tracks actually below 64 kbps are counted as below threshold.
+
+Added regression tests verifying that summary output agrees with the
+`low-bitrate` rule.

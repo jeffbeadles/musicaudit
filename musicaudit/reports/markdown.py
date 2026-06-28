@@ -210,7 +210,7 @@ def append_bitrate(lines, tracks, mode: str, low_bitrate: int):
 
     if mode == "summary":
         lines += ["## Bitrate Summary", ""]
-        for key in ["Lossless / Hi-Res", "320 kbps and above", "256-319 kbps", f"Below {low_bitrate} kbps", "unknown"]:
+        for key in ["Lossless / Hi-Res", "320 kbps and above", "256-319 kbps", f"{low_bitrate}-255 kbps", f"Below {low_bitrate} kbps", "unknown"]:
             if summary_counts[key]:
                 lines.append(f"- {key}: **{fmt_int(summary_counts[key])}**")
         lines.append("")

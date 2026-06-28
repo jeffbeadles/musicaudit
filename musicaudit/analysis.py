@@ -42,6 +42,8 @@ def bitrate_bucket(bit_rate: Any, low_threshold: int) -> str:
         return "320 kbps and above"
     if br >= 256:
         return "256-319 kbps"
+    if br >= low_threshold:
+        return f"{low_threshold}-255 kbps"
     return f"Below {low_threshold} kbps"
 
 
