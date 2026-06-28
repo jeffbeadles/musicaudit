@@ -9,4 +9,4 @@ class UnreadableFileRule(Rule):
     requires_scan_files = True
 
     def run(self, library, core):
-        return RuleResult(self.id, self.level, self.description, [None] * core["mutagen_unreadable"])
+        return RuleResult(self.id, self.level, self.description, core["mutagen_unreadable_tracks"])

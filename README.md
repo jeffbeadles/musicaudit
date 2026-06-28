@@ -1,4 +1,4 @@
-# musicaudit - Version 8.9
+# musicaudit - Version 9.1
 
 `musicaudit` is a read-only QA toolkit for curated digital music collections.
 
@@ -554,3 +554,20 @@ Added regression tests for:
 - `--xml` being removed
 - `--apple-library` missing-file error handling
 - `--path` implying the filesystem provider
+
+
+## Version 9.1
+
+Fixed JSON output for embedded-file rules.
+
+Previously, rules such as `missing-artwork`, `missing-lyrics`, and
+`unreadable-file` returned placeholder `null` entries in JSON:
+
+```json
+"items": [null, null, null]
+```
+
+These rules now return the actual matching track objects, making JSON output
+useful for scripts and debugging.
+
+Added regression tests for missing artwork and missing lyrics JSON output.

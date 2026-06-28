@@ -90,9 +90,12 @@ def audit_core(library, scan_files: bool, low_bitrate: int) -> Dict[str, Any]:
     low_bitrate_tracks = []
     lyrics_count = 0
     lyrics_missing = 0
+    lyrics_missing_tracks = []
     artwork_count = 0
     artwork_missing = 0
+    artwork_missing_tracks = []
     mutagen_unreadable = 0
+    mutagen_unreadable_tracks = []
     tag_mismatches = []
 
     for t in tracks:
@@ -117,28 +120,34 @@ def audit_core(library, scan_files: bool, low_bitrate: int) -> Dict[str, Any]:
         if t.get("filesystem_provider"):
             if not t.get("audio_readable"):
                 mutagen_unreadable += 1
+                mutagen_unreadable_tracks.append(t)
             if t.get("embedded_has_lyrics"):
                 lyrics_count += 1
             else:
                 lyrics_missing += 1
+                lyrics_missing_tracks.append(t)
             if t.get("embedded_has_artwork"):
                 artwork_count += 1
             else:
                 artwork_missing += 1
+                artwork_missing_tracks.append(t)
 
         elif scan_files and exists:
             details = read_audio_details(path)
             t["audio_details"] = details
             if not details["readable"]:
                 mutagen_unreadable += 1
+                mutagen_unreadable_tracks.append(t)
             if details["has_lyrics"] is True:
                 lyrics_count += 1
             elif details["has_lyrics"] is False:
                 lyrics_missing += 1
+                lyrics_missing_tracks.append(t)
             if details["has_artwork"] is True:
                 artwork_count += 1
             elif details["has_artwork"] is False:
                 artwork_missing += 1
+                artwork_missing_tracks.append(t)
 
             tags = details.get("tags") or {}
             for xml_key, tag_key, label in [
@@ -173,9 +182,12 @@ def audit_core(library, scan_files: bool, low_bitrate: int) -> Dict[str, Any]:
         "low_bitrate_tracks": low_bitrate_tracks,
         "lyrics_count": lyrics_count,
         "lyrics_missing": lyrics_missing,
+        "lyrics_missing_tracks": lyrics_missing_tracks,
         "artwork_count": artwork_count,
         "artwork_missing": artwork_missing,
+        "artwork_missing_tracks": artwork_missing_tracks,
         "mutagen_unreadable": mutagen_unreadable,
+        "mutagen_unreadable_tracks": mutagen_unreadable_tracks,
         "tag_mismatches": tag_mismatches,
         "duplicates": duplicates,
         "smart_count": smart_count,
