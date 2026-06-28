@@ -1,8 +1,13 @@
-# musicaudit - Version 9.2
+# musicaudit - Version 9.3
 
 `musicaudit` is a read-only QA toolkit for curated digital music collections.
 
-Version 7 adds automatic rule discovery.
+musicaudit makes finding issues in a music collection trivially fast and easy, so you can spend your time improving the collection instead of searching for problems.
+
+It analyzes collections and reports their health without making changes to music files or library databases.
+
+musicaudit validates the contents of a music collection. It does not acquire, modify, or redistribute copyrighted content.
+
 
 Each rule now lives in its own module under `musicaudit/rules/`.
 Rules self-register with the rule engine using `@register_rule`.
@@ -587,3 +592,22 @@ only tracks actually below 64 kbps are counted as below threshold.
 
 Added regression tests verifying that summary output agrees with the
 `low-bitrate` rule.
+
+
+## Version 9.3
+
+Added JSON output to additional core reporting commands:
+
+```bash
+musicaudit health --format json
+musicaudit summary --format json
+musicaudit diff --format json
+```
+
+`rules` and `verify` already supported JSON.
+
+Also simplified Markdown number formatting by removing bold emphasis around
+numeric values. The reports are less visually noisy and easier to scan.
+
+Added regression tests for health, summary, and diff JSON output, plus a stats
+report test to ensure numeric values are not wrapped in Markdown bold markers.
