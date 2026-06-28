@@ -1,10 +1,47 @@
+# Contributing to musicaudit
 
-Project Philosophy
+Thank you for your interest in contributing.
 
-We welcome ideas, bug reports, and feature requests.
+Before proposing a new feature, please consider whether it aligns with the
+project's goals.
 
-Acceptance is based on whether a proposal advances the project’s purpose of validating and preserving curated digital music collections.
+## Project Goals
 
-Features that broaden the scope into playback, editing, ripping, or library management will generally not be accepted, regardless of implementation quality.
+musicaudit is a read-only validation engine for digital music collections.
 
-Rejected feature requests are not a judgment of the contributor. They simply may not fit the long-term direction of the project.
+The goal is to accurately describe the health of a collection and provide
+stable human-readable and machine-readable output.
+
+## Project Contracts
+
+The following contracts are considered fundamental to the project.
+
+### Read-only
+
+musicaudit does not modify music files or music libraries.
+
+There will never be a general-purpose "fix" or "write" mode.
+
+### Stable JSON
+
+The JSON output is a public interface.
+
+Existing fields are never removed or redefined.
+
+New fields may be added.
+
+### Validation First
+
+Rules should identify problems completely.
+
+They should provide enough information for another tool to locate and resolve
+the issue.
+
+### Small Scope
+
+musicaudit performs validation.
+
+It intentionally does not perform metadata editing, artwork downloading,
+renaming, or other maintenance tasks.
+
+Those are encouraged as separate tools.

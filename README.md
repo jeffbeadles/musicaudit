@@ -2,18 +2,18 @@
 
 `musicaudit` is a read-only QA toolkit for curated digital music collections.
 
-Version 7 adds automatic rule discovery.
+musicaudit is a read-only validation engine for digital music collections.
 
-Each rule now lives in its own module under `musicaudit/rules/`.
-Rules self-register with the rule engine using `@register_rule`.
+It analyzes collections and reports their health without making changes to
+music files or library databases.
+
+
 
 ## Safety rule
 
 `musicaudit` is read-only.
 
 It does not modify music files, tags, XML files, playlists, ratings, lyrics, artwork, or file locations.
-
-Future write-capable features, if ever added, should require explicit write-oriented commands and confirmation. The default mode of this project is audit, validate, compare, and report.
 
 ## Install optional dependencies
 
