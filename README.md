@@ -5,6 +5,8 @@ musicaudit makes finding issues in a music collection trivially fast and easy, s
 It analyzes collections and reports their health without making changes to
 music files or library databases.
 
+musicaudit validates the contents of a music collection. It does not acquire, modify, or redistribute copyrighted content.
+
 
 
 ## Safety rule
