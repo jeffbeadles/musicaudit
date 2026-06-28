@@ -1,8 +1,6 @@
 # musicaudit - Version 9.1
 
-`musicaudit` is a read-only QA toolkit for curated digital music collections.
-
-musicaudit is a read-only validation engine for digital music collections.
+musicaudit makes finding issues in a music collection trivially fast and easy, so you can spend your time improving the collection instead of searching for problems.
 
 It analyzes collections and reports their health without making changes to
 music files or library databases.
