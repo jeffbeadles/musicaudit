@@ -19,6 +19,30 @@ def comparable_path(t):
     return str(t.get("relative_path") or t.get("path") or "")
 
 
+def text_transition(old_value, new_value):
+    old_s = str(old_value or "").strip()
+    new_s = str(new_value or "").strip()
+    if not old_s and new_s:
+        return "added"
+    if old_s and not new_s:
+        return "removed"
+    if old_s != new_s:
+        return "modified"
+    return "unchanged"
+
+
+def bool_transition(old_value, new_value):
+    old_b = bool(old_value)
+    new_b = bool(new_value)
+    if not old_b and new_b:
+        return "added"
+    if old_b and not new_b:
+        return "removed"
+    if old_b != new_b:
+        return "modified"
+    return "unchanged"
+
+
 def read_diff_input(path):
     p = expand_path(path)
     if not p.exists():
@@ -62,9 +86,16 @@ def analyze_diff(old_tracks, new_tracks, old_playlists, new_playlists, known_tok
     path_changed = []
     title_changed = []
     album_artist_changed = []
+    album_artist_added = []
+    album_artist_modified = []
+    album_artist_removed = []
     bitrate_changed = []
     artwork_changed = []
+    artwork_added = []
+    artwork_removed = []
     lyrics_changed = []
+    lyrics_added = []
+    lyrics_removed = []
     readable_changed = []
 
     added_with_ratings = collections.Counter()
@@ -101,14 +132,34 @@ def analyze_diff(old_tracks, new_tracks, old_playlists, new_playlists, known_tok
             path_changed.append((o, n))
         if (o.get("name"), o.get("artist"), o.get("album")) != (n.get("name"), n.get("artist"), n.get("album")):
             title_changed.append((o, n))
-        if (o.get("album_artist") or "") != (n.get("album_artist") or ""):
+        album_artist_change = text_transition(o.get("album_artist"), n.get("album_artist"))
+        if album_artist_change != "unchanged":
             album_artist_changed.append((o, n))
+            if album_artist_change == "added":
+                album_artist_added.append((o, n))
+            elif album_artist_change == "removed":
+                album_artist_removed.append((o, n))
+            else:
+                album_artist_modified.append((o, n))
+
         if o.get("bit_rate") != n.get("bit_rate"):
             bitrate_changed.append((o, n))
-        if o.get("embedded_has_artwork") != n.get("embedded_has_artwork"):
+
+        artwork_change = bool_transition(o.get("embedded_has_artwork"), n.get("embedded_has_artwork"))
+        if artwork_change != "unchanged":
             artwork_changed.append((o, n))
-        if o.get("embedded_has_lyrics") != n.get("embedded_has_lyrics"):
+            if artwork_change == "added":
+                artwork_added.append((o, n))
+            elif artwork_change == "removed":
+                artwork_removed.append((o, n))
+
+        lyrics_change = bool_transition(o.get("embedded_has_lyrics"), n.get("embedded_has_lyrics"))
+        if lyrics_change != "unchanged":
             lyrics_changed.append((o, n))
+            if lyrics_change == "added":
+                lyrics_added.append((o, n))
+            elif lyrics_change == "removed":
+                lyrics_removed.append((o, n))
         if o.get("audio_readable") != n.get("audio_readable"):
             readable_changed.append((o, n))
 
@@ -164,10 +215,14 @@ def terse_diff(d) -> str:
         f"comment_changes={fmt_int(len(d['comments_changed']))}",
         f"path_changes={fmt_int(len(d['path_changed']))}",
         f"title_artist_album_changes={fmt_int(len(d['title_changed']))}",
-        f"album_artist_changes={fmt_int(len(d['album_artist_changed']))}",
+        f"album_artist_added={fmt_int(len(d['album_artist_added']))}",
+        f"album_artist_modified={fmt_int(len(d['album_artist_modified']))}",
+        f"album_artist_removed={fmt_int(len(d['album_artist_removed']))}",
         f"bitrate_changes={fmt_int(len(d['bitrate_changed']))}",
-        f"artwork_changes={fmt_int(len(d['artwork_changed']))}",
-        f"lyrics_changes={fmt_int(len(d['lyrics_changed']))}",
+        f"artwork_added={fmt_int(len(d['artwork_added']))}",
+        f"artwork_removed={fmt_int(len(d['artwork_removed']))}",
+        f"lyrics_added={fmt_int(len(d['lyrics_added']))}",
+        f"lyrics_removed={fmt_int(len(d['lyrics_removed']))}",
         f"readability_changes={fmt_int(len(d['readable_changed']))}",
         f"new_playlists={fmt_int(len(d['playlist_added']))}",
         f"removed_playlists={fmt_int(len(d['playlist_removed']))}",
@@ -190,10 +245,14 @@ def verbose_diff(old_input, new_input, d) -> str:
         f"- Comment changes: {fmt_int(len(d['comments_changed']))}",
         f"- Path changes: {fmt_int(len(d['path_changed']))}",
         f"- Title/artist/album changes: {fmt_int(len(d['title_changed']))}",
-        f"- Album artist changes: {fmt_int(len(d['album_artist_changed']))}",
+        f"- Album artist added: {fmt_int(len(d['album_artist_added']))}",
+        f"- Album artist modified: {fmt_int(len(d['album_artist_modified']))}",
+        f"- Album artist removed: {fmt_int(len(d['album_artist_removed']))}",
         f"- Bitrate changes: {fmt_int(len(d['bitrate_changed']))}",
-        f"- Embedded artwork changes: {fmt_int(len(d['artwork_changed']))}",
-        f"- Embedded lyrics changes: {fmt_int(len(d['lyrics_changed']))}",
+        f"- Embedded artwork added: {fmt_int(len(d['artwork_added']))}",
+        f"- Embedded artwork removed: {fmt_int(len(d['artwork_removed']))}",
+        f"- Embedded lyrics added: {fmt_int(len(d['lyrics_added']))}",
+        f"- Embedded lyrics removed: {fmt_int(len(d['lyrics_removed']))}",
         f"- Readability changes: {fmt_int(len(d['readable_changed']))}",
         f"- New playlists: {fmt_int(len(d['playlist_added']))}",
         f"- Removed playlists: {fmt_int(len(d['playlist_removed']))}",
@@ -216,10 +275,46 @@ def verbose_diff(old_input, new_input, d) -> str:
             lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}: {old_rating or 'missing'} -> {new_rating or 'missing'}")
         lines.append("")
 
-    if d["artwork_changed"]:
-        lines += ["## First 25 Embedded Artwork Changes", ""]
-        for o, n in d["artwork_changed"][:max_details]:
-            lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}: {o.get('embedded_has_artwork')} -> {n.get('embedded_has_artwork')}")
+    if d["album_artist_added"]:
+        lines += ["## First 25 Album Artist Additions", ""]
+        for o, n in d["album_artist_added"][:max_details]:
+            lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}: added `{n.get('album_artist', '')}`")
+        lines.append("")
+
+    if d["album_artist_modified"]:
+        lines += ["## First 25 Album Artist Modifications", ""]
+        for o, n in d["album_artist_modified"][:max_details]:
+            lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}: `{o.get('album_artist', '')}` -> `{n.get('album_artist', '')}`")
+        lines.append("")
+
+    if d["album_artist_removed"]:
+        lines += ["## First 25 Album Artist Removals", ""]
+        for o, n in d["album_artist_removed"][:max_details]:
+            lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}: removed `{o.get('album_artist', '')}`")
+        lines.append("")
+
+    if d["artwork_added"]:
+        lines += ["## First 25 Embedded Artwork Additions", ""]
+        for o, n in d["artwork_added"][:max_details]:
+            lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}")
+        lines.append("")
+
+    if d["artwork_removed"]:
+        lines += ["## First 25 Embedded Artwork Removals", ""]
+        for o, n in d["artwork_removed"][:max_details]:
+            lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}")
+        lines.append("")
+
+    if d["lyrics_added"]:
+        lines += ["## First 25 Embedded Lyrics Additions", ""]
+        for o, n in d["lyrics_added"][:max_details]:
+            lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}")
+        lines.append("")
+
+    if d["lyrics_removed"]:
+        lines += ["## First 25 Embedded Lyrics Removals", ""]
+        for o, n in d["lyrics_removed"][:max_details]:
+            lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}")
         lines.append("")
 
     if d["smart_changed"]:

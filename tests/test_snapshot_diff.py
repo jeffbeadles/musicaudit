@@ -70,6 +70,7 @@ def test_diff_accepts_snapshot_json(capsys, tmp_path):
     assert payload["summary"]["comment_changes"] == 1
     assert payload["summary"]["bitrate_changes"] == 1
     assert payload["summary"]["artwork_changes"] == 1
+    assert payload["summary"]["artwork_added"] == 1
     # Different absolute roots should not be path changes when relative paths match.
     assert payload["summary"]["path_changes"] == 0
 

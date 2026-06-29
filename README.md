@@ -1,4 +1,4 @@
-# musicaudit - Version 9.5
+# musicaudit - Version 9.6
 
 `musicaudit` is a read-only QA toolkit for curated digital music collections.
 
@@ -659,3 +659,24 @@ If no before snapshot exists, a snapshot can be created from a backup copy of th
 music collection and compared against a snapshot of the current collection.
 
 Path-to-path diff is intentionally deferred until after 1.0.
+
+
+## Version 9.6
+
+Improved snapshot diff reporting for metadata transitions.
+
+The human diff summary now distinguishes between metadata being added,
+modified, or removed instead of reporting all transitions as generic changes.
+
+For example:
+
+```text
+Album artist added: 15
+Album artist modified: 0
+Album artist removed: 0
+Embedded artwork added: 15
+Embedded artwork removed: 0
+```
+
+This makes it easier to distinguish expected enrichment from unexpected tag
+rewrites or data loss.
