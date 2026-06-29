@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import collections
+import json
 
 from ..model import analyze_comment_tokens, DEFAULT_KNOWN_TOKENS
 from ..providers.applemusic import read_plist, extract_tracks, extract_playlists
@@ -11,7 +12,38 @@ from ..reports.json import diff_json_report
 
 
 def track_key(t):
-    return str(t.get("persistent_id") or t.get("track_id"))
+    return str(t.get("persistent_id") or t.get("relative_path") or t.get("path") or t.get("track_id"))
+
+
+def comparable_path(t):
+    return str(t.get("relative_path") or t.get("path") or "")
+
+
+def read_diff_input(path):
+    p = expand_path(path)
+    if not p.exists():
+        raise RuntimeError(f"Diff input not found: {p}")
+
+    if p.suffix.lower() == ".json":
+        payload = json.loads(p.read_text(encoding="utf-8"))
+        if payload.get("schema") != "musicaudit.snapshot.v1":
+            raise RuntimeError(f"JSON diff input is not a musicaudit snapshot: {p}")
+        return {
+            "path": p,
+            "kind": "snapshot",
+            "tracks": payload.get("tracks", []) or [],
+            "playlists": payload.get("playlists", []) or [],
+            "payload": payload,
+        }
+
+    plist = read_plist(p)
+    return {
+        "path": p,
+        "kind": "apple-library",
+        "tracks": extract_tracks(plist),
+        "playlists": extract_playlists(plist),
+        "payload": None,
+    }
 
 
 def analyze_diff(old_tracks, new_tracks, old_playlists, new_playlists, known_tokens):
@@ -29,6 +61,11 @@ def analyze_diff(old_tracks, new_tracks, old_playlists, new_playlists, known_tok
     comments_changed = []
     path_changed = []
     title_changed = []
+    album_artist_changed = []
+    bitrate_changed = []
+    artwork_changed = []
+    lyrics_changed = []
+    readable_changed = []
 
     added_with_ratings = collections.Counter()
     removed_with_ratings = collections.Counter()
@@ -60,10 +97,20 @@ def analyze_diff(old_tracks, new_tracks, old_playlists, new_playlists, known_tok
             fav_changed.append((o, n, ot["favorite"], nt["favorite"]))
         if (o.get("comments") or "") != (n.get("comments") or ""):
             comments_changed.append((o, n))
-        if str(o.get("path")) != str(n.get("path")):
+        if comparable_path(o) != comparable_path(n):
             path_changed.append((o, n))
         if (o.get("name"), o.get("artist"), o.get("album")) != (n.get("name"), n.get("artist"), n.get("album")):
             title_changed.append((o, n))
+        if (o.get("album_artist") or "") != (n.get("album_artist") or ""):
+            album_artist_changed.append((o, n))
+        if o.get("bit_rate") != n.get("bit_rate"):
+            bitrate_changed.append((o, n))
+        if o.get("embedded_has_artwork") != n.get("embedded_has_artwork"):
+            artwork_changed.append((o, n))
+        if o.get("embedded_has_lyrics") != n.get("embedded_has_lyrics"):
+            lyrics_changed.append((o, n))
+        if o.get("audio_readable") != n.get("audio_readable"):
+            readable_changed.append((o, n))
 
     def pmap(playlists):
         return {str(p.get("persistent_id") or p.get("name")): p for p in playlists}
@@ -77,30 +124,36 @@ def analyze_diff(old_tracks, new_tracks, old_playlists, new_playlists, known_tok
     playlist_removed = [op[k] for k in sorted(op_keys - np_keys)]
     smart_changed = []
     for k in sorted(op_keys & np_keys):
-        if op[k]["is_smart"] or np[k]["is_smart"]:
-            if op[k]["smart_criteria_hash"] != np[k]["smart_criteria_hash"] or op[k]["smart_info_hash"] != np[k]["smart_info_hash"]:
+        if op[k].get("is_smart") or np[k].get("is_smart"):
+            if op[k].get("smart_criteria_hash") != np[k].get("smart_criteria_hash") or op[k].get("smart_info_hash") != np[k].get("smart_info_hash"):
                 smart_changed.append((op[k], np[k]))
 
     return locals()
 
 
+def total_changes(d) -> int:
+    keys = [
+        "added",
+        "removed",
+        "rating_changed",
+        "fav_changed",
+        "comments_changed",
+        "path_changed",
+        "title_changed",
+        "album_artist_changed",
+        "bitrate_changed",
+        "artwork_changed",
+        "lyrics_changed",
+        "readable_changed",
+        "playlist_added",
+        "playlist_removed",
+        "smart_changed",
+    ]
+    return sum(len(d[k]) for k in keys)
+
+
 def terse_diff(d) -> str:
-    total_changes = sum(
-        len(d[k])
-        for k in [
-            "added",
-            "removed",
-            "rating_changed",
-            "fav_changed",
-            "comments_changed",
-            "path_changed",
-            "title_changed",
-            "playlist_added",
-            "playlist_removed",
-            "smart_changed",
-        ]
-    )
-    lines = ["NO CHANGES" if total_changes == 0 else "CHANGES", ""]
+    lines = ["NO CHANGES" if total_changes(d) == 0 else "CHANGES", ""]
     lines += [
         f"new_songs={fmt_int(len(d['added']))}",
         f"removed_songs={fmt_int(len(d['removed']))}",
@@ -111,6 +164,11 @@ def terse_diff(d) -> str:
         f"comment_changes={fmt_int(len(d['comments_changed']))}",
         f"path_changes={fmt_int(len(d['path_changed']))}",
         f"title_artist_album_changes={fmt_int(len(d['title_changed']))}",
+        f"album_artist_changes={fmt_int(len(d['album_artist_changed']))}",
+        f"bitrate_changes={fmt_int(len(d['bitrate_changed']))}",
+        f"artwork_changes={fmt_int(len(d['artwork_changed']))}",
+        f"lyrics_changes={fmt_int(len(d['lyrics_changed']))}",
+        f"readability_changes={fmt_int(len(d['readable_changed']))}",
         f"new_playlists={fmt_int(len(d['playlist_added']))}",
         f"removed_playlists={fmt_int(len(d['playlist_removed']))}",
         f"smart_playlist_changes={fmt_int(len(d['smart_changed']))}",
@@ -119,9 +177,9 @@ def terse_diff(d) -> str:
     return "\n".join(lines)
 
 
-def verbose_diff(old_xml, new_xml, d) -> str:
+def verbose_diff(old_input, new_input, d) -> str:
     lines = header("Music Library Diff")
-    lines += [f"Old XML: `{old_xml}`", f"New XML: `{new_xml}`", "", "## Summary", ""]
+    lines += [f"Old input: `{old_input}`", f"New input: `{new_input}`", "", "## Summary", ""]
     lines += [
         f"- New songs: {fmt_int(len(d['added']))}",
         f"- Removed songs: {fmt_int(len(d['removed']))}",
@@ -132,6 +190,11 @@ def verbose_diff(old_xml, new_xml, d) -> str:
         f"- Comment changes: {fmt_int(len(d['comments_changed']))}",
         f"- Path changes: {fmt_int(len(d['path_changed']))}",
         f"- Title/artist/album changes: {fmt_int(len(d['title_changed']))}",
+        f"- Album artist changes: {fmt_int(len(d['album_artist_changed']))}",
+        f"- Bitrate changes: {fmt_int(len(d['bitrate_changed']))}",
+        f"- Embedded artwork changes: {fmt_int(len(d['artwork_changed']))}",
+        f"- Embedded lyrics changes: {fmt_int(len(d['lyrics_changed']))}",
+        f"- Readability changes: {fmt_int(len(d['readable_changed']))}",
         f"- New playlists: {fmt_int(len(d['playlist_added']))}",
         f"- Removed playlists: {fmt_int(len(d['playlist_removed']))}",
         f"- Smart playlist changes: {fmt_int(len(d['smart_changed']))}",
@@ -153,10 +216,16 @@ def verbose_diff(old_xml, new_xml, d) -> str:
             lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}: {old_rating or 'missing'} -> {new_rating or 'missing'}")
         lines.append("")
 
+    if d["artwork_changed"]:
+        lines += ["## First 25 Embedded Artwork Changes", ""]
+        for o, n in d["artwork_changed"][:max_details]:
+            lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}: {o.get('embedded_has_artwork')} -> {n.get('embedded_has_artwork')}")
+        lines.append("")
+
     if d["smart_changed"]:
         lines += ["## Smart Playlist Changes", ""]
         for o, n in d["smart_changed"][:max_details]:
-            lines.append(f"- {n.get('name')}: criteria {o['smart_criteria_hash']} -> {n['smart_criteria_hash']}; info {o['smart_info_hash']} -> {n['smart_info_hash']}")
+            lines.append(f"- {n.get('name')}: criteria {o.get('smart_criteria_hash')} -> {n.get('smart_criteria_hash')}; info {o.get('smart_info_hash')} -> {n.get('smart_info_hash')}")
         lines.append("")
 
     return "\n".join(lines)
@@ -168,30 +237,27 @@ def run(args) -> int:
     known_tokens.update(config.get("known_tokens", []) or [])
     known_tokens.update(args.known_token or [])
 
-    old_xml = expand_path(args.old)
-    new_xml = expand_path(args.new)
-
-    old_plist = read_plist(old_xml)
-    new_plist = read_plist(new_xml)
+    old_input = read_diff_input(args.old)
+    new_input = read_diff_input(args.new)
 
     d = analyze_diff(
-        extract_tracks(old_plist),
-        extract_tracks(new_plist),
-        extract_playlists(old_plist),
-        extract_playlists(new_plist),
+        old_input["tracks"],
+        new_input["tracks"],
+        old_input["playlists"],
+        new_input["playlists"],
         known_tokens,
     )
 
     if args.format == "json":
-        report, code = diff_json_report(old_xml, new_xml, d)
+        report, code = diff_json_report(old_input["path"], new_input["path"], d)
         return write_or_print(report, args.markdown) or code
 
-    report = terse_diff(d) if args.terse else verbose_diff(old_xml, new_xml, d)
+    report = terse_diff(d) if args.terse else verbose_diff(old_input["path"], new_input["path"], d)
     return write_or_print(report, args.markdown)
 
 
 def register(sub):
-    p = sub.add_parser("diff", help="Compare two exported Apple Music/iTunes XML files.")
+    p = sub.add_parser("diff", help="Compare Apple library XML files or musicaudit snapshot JSON files.")
     p.add_argument("--config")
     p.add_argument("--old", required=True)
     p.add_argument("--new", required=True)

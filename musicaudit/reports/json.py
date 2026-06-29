@@ -232,6 +232,18 @@ def diff_json_report(old_input, new_input, d) -> tuple[str, int]:
             "new": compact_track(n),
         }
 
+    def transition_items(key, old_field, new_field):
+        return [
+            {
+                "track": compact_track(n),
+                old_field: o.get(old_field.replace("old_", "")),
+                new_field: n.get(new_field.replace("new_", "")),
+                "old": compact_track(o),
+                "new": compact_track(n),
+            }
+            for o, n in d[key]
+        ]
+
     payload = {
         "status": "NO_CHANGES",
         "old": str(old_input),
@@ -246,6 +258,11 @@ def diff_json_report(old_input, new_input, d) -> tuple[str, int]:
             "comment_changes": len(d["comments_changed"]),
             "path_changes": len(d["path_changed"]),
             "title_artist_album_changes": len(d["title_changed"]),
+            "album_artist_changes": len(d.get("album_artist_changed", [])),
+            "bitrate_changes": len(d.get("bitrate_changed", [])),
+            "artwork_changes": len(d.get("artwork_changed", [])),
+            "lyrics_changes": len(d.get("lyrics_changed", [])),
+            "readability_changes": len(d.get("readable_changed", [])),
             "new_playlists": len(d["playlist_added"]),
             "removed_playlists": len(d["playlist_removed"]),
             "smart_playlist_changes": len(d["smart_changed"]),
@@ -274,6 +291,11 @@ def diff_json_report(old_input, new_input, d) -> tuple[str, int]:
             "comment_changes": [change_track_pair(pair) for pair in d["comments_changed"]],
             "path_changes": [change_track_pair(pair) for pair in d["path_changed"]],
             "title_artist_album_changes": [change_track_pair(pair) for pair in d["title_changed"]],
+            "album_artist_changes": [change_track_pair(pair) for pair in d.get("album_artist_changed", [])],
+            "bitrate_changes": [change_track_pair(pair) for pair in d.get("bitrate_changed", [])],
+            "artwork_changes": [change_track_pair(pair) for pair in d.get("artwork_changed", [])],
+            "lyrics_changes": [change_track_pair(pair) for pair in d.get("lyrics_changed", [])],
+            "readability_changes": [change_track_pair(pair) for pair in d.get("readable_changed", [])],
             "new_playlists": [json_safe(p) for p in d["playlist_added"]],
             "removed_playlists": [json_safe(p) for p in d["playlist_removed"]],
             "smart_playlist_changes": [

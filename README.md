@@ -1,4 +1,4 @@
-# musicaudit - Version 9.4
+# musicaudit - Version 9.5
 
 `musicaudit` is a read-only QA toolkit for curated digital music collections.
 
@@ -626,3 +626,36 @@ Quitting the pager no longer reports a `BrokenPipeError`.
 
 Added a regression test that closes stdout early and verifies no traceback is
 printed.
+
+
+## Version 9.5
+
+Added snapshot support.
+
+Snapshots capture the current normalized library view as JSON for later
+comparison:
+
+```bash
+musicaudit snapshot --path ~/Music > before.json
+musicaudit snapshot --path ~/Music > after.json
+musicaudit diff --old before.json --new after.json --format json
+```
+
+Snapshot diff is the first filesystem-oriented diff workflow. It avoids needing
+two live paths and keeps the diff process reproducible.
+
+`musicaudit diff` now accepts either Apple Music XML inputs or musicaudit
+snapshot JSON inputs.
+
+Snapshot diffs detect additional filesystem-relevant changes, including:
+
+- album artist changes
+- bitrate changes
+- embedded artwork state changes
+- embedded lyrics state changes
+- audio readability changes
+
+If no before snapshot exists, a snapshot can be created from a backup copy of the
+music collection and compared against a snapshot of the current collection.
+
+Path-to-path diff is intentionally deferred until after 1.0.

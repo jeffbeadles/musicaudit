@@ -160,6 +160,7 @@ def read_track(path: Path, root: Path, index: int) -> Dict[str, Any]:
         "date_added": None,
         "location": str(path),
         "path": path,
+        "relative_path": str(rel),
         "size": path.stat().st_size if path.exists() else None,
         "bit_rate": None,
         "sample_rate": None,

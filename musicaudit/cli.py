@@ -4,7 +4,7 @@ import argparse
 import sys
 
 from . import __version__
-from .commands import health, summary, tokens, playlists, stats, verify, diff, rules
+from .commands import health, summary, tokens, playlists, stats, verify, diff, rules, snapshot
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -24,6 +24,7 @@ def build_parser() -> argparse.ArgumentParser:
     verify.register(sub)
     rules.register(sub)
     diff.register(sub)
+    snapshot.register(sub)
 
     return parser
 
@@ -45,6 +46,7 @@ def main(argv=None) -> int:
         "verify",
         "rules",
         "diff",
+        "snapshot",
     }
 
     # Convenience: "musicaudit --xml Library.xml" means summary.
