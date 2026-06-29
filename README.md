@@ -1,13 +1,8 @@
-# musicaudit - Version 9.3
+# musicaudit - Version 9.4
 
 `musicaudit` is a read-only QA toolkit for curated digital music collections.
 
-musicaudit makes finding issues in a music collection trivially fast and easy, so you can spend your time improving the collection instead of searching for problems.
-
-It analyzes collections and reports their health without making changes to music files or library databases.
-
-musicaudit validates the contents of a music collection. It does not acquire, modify, or redistribute copyrighted content.
-
+Version 7 adds automatic rule discovery.
 
 Each rule now lives in its own module under `musicaudit/rules/`.
 Rules self-register with the rule engine using `@register_rule`.
@@ -611,3 +606,23 @@ numeric values. The reports are less visually noisy and easier to scan.
 
 Added regression tests for health, summary, and diff JSON output, plus a stats
 report test to ensure numeric values are not wrapped in Markdown bold markers.
+
+
+## Version 9.4
+
+Fixed broken-pipe handling for Unix pipelines.
+
+Previously, commands that produced large output could show a Python traceback
+when piped to a command such as `more`, `less`, or `head` and the downstream
+command exited before reading all output.
+
+Example:
+
+```bash
+musicaudit rules --path ~/Music --format json | more
+```
+
+Quitting the pager no longer reports a `BrokenPipeError`.
+
+Added a regression test that closes stdout early and verifies no traceback is
+printed.
