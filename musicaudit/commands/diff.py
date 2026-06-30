@@ -85,6 +85,9 @@ def analyze_diff(old_tracks, new_tracks, old_playlists, new_playlists, known_tok
     comments_changed = []
     path_changed = []
     title_changed = []
+    track_name_changed = []
+    track_artist_changed = []
+    album_changed = []
     album_artist_changed = []
     album_artist_added = []
     album_artist_modified = []
@@ -132,6 +135,12 @@ def analyze_diff(old_tracks, new_tracks, old_playlists, new_playlists, known_tok
             path_changed.append((o, n))
         if (o.get("name"), o.get("artist"), o.get("album")) != (n.get("name"), n.get("artist"), n.get("album")):
             title_changed.append((o, n))
+        if (o.get("name") or "") != (n.get("name") or ""):
+            track_name_changed.append((o, n))
+        if (o.get("artist") or "") != (n.get("artist") or ""):
+            track_artist_changed.append((o, n))
+        if (o.get("album") or "") != (n.get("album") or ""):
+            album_changed.append((o, n))
         album_artist_change = text_transition(o.get("album_artist"), n.get("album_artist"))
         if album_artist_change != "unchanged":
             album_artist_changed.append((o, n))
@@ -215,6 +224,9 @@ def terse_diff(d) -> str:
         f"comment_changes={fmt_int(len(d['comments_changed']))}",
         f"path_changes={fmt_int(len(d['path_changed']))}",
         f"title_artist_album_changes={fmt_int(len(d['title_changed']))}",
+        f"track_name_changes={fmt_int(len(d['track_name_changed']))}",
+        f"track_artist_changes={fmt_int(len(d['track_artist_changed']))}",
+        f"album_title_changes={fmt_int(len(d['album_changed']))}",
         f"album_artist_added={fmt_int(len(d['album_artist_added']))}",
         f"album_artist_modified={fmt_int(len(d['album_artist_modified']))}",
         f"album_artist_removed={fmt_int(len(d['album_artist_removed']))}",
@@ -245,6 +257,9 @@ def verbose_diff(old_input, new_input, d) -> str:
         f"- Comment changes: {fmt_int(len(d['comments_changed']))}",
         f"- Path changes: {fmt_int(len(d['path_changed']))}",
         f"- Title/artist/album changes: {fmt_int(len(d['title_changed']))}",
+        f"- Track name changes: {fmt_int(len(d['track_name_changed']))}",
+        f"- Track artist changes: {fmt_int(len(d['track_artist_changed']))}",
+        f"- Album title changes: {fmt_int(len(d['album_changed']))}",
         f"- Album artist added: {fmt_int(len(d['album_artist_added']))}",
         f"- Album artist modified: {fmt_int(len(d['album_artist_modified']))}",
         f"- Album artist removed: {fmt_int(len(d['album_artist_removed']))}",
@@ -273,6 +288,24 @@ def verbose_diff(old_input, new_input, d) -> str:
         lines += ["## First 25 Rating Changes", ""]
         for o, n, old_rating, new_rating in d["rating_changed"][:max_details]:
             lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}: {old_rating or 'missing'} -> {new_rating or 'missing'}")
+        lines.append("")
+
+    if d["track_name_changed"]:
+        lines += ["## First 25 Track Name Changes", ""]
+        for o, n in d["track_name_changed"][:max_details]:
+            lines.append(f"- {n.get('artist', '')}: `{o.get('name', '')}` -> `{n.get('name', '')}`")
+        lines.append("")
+
+    if d["track_artist_changed"]:
+        lines += ["## First 25 Track Artist Changes", ""]
+        for o, n in d["track_artist_changed"][:max_details]:
+            lines.append(f"- {n.get('name', '')}: `{o.get('artist', '')}` -> `{n.get('artist', '')}`")
+        lines.append("")
+
+    if d["album_changed"]:
+        lines += ["## First 25 Album Title Changes", ""]
+        for o, n in d["album_changed"][:max_details]:
+            lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}: `{o.get('album', '')}` -> `{n.get('album', '')}`")
         lines.append("")
 
     if d["album_artist_added"]:

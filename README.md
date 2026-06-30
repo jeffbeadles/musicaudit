@@ -1,4 +1,4 @@
-# musicaudit - Version 9.6
+# musicaudit - Version 9.7
 
 `musicaudit` is a read-only QA toolkit for curated digital music collections.
 
@@ -680,3 +680,21 @@ Embedded artwork removed: 0
 
 This makes it easier to distinguish expected enrichment from unexpected tag
 rewrites or data loss.
+
+
+## Version 9.7
+
+Improved snapshot diff reporting for title/artist/album metadata.
+
+The diff report now splits the previous aggregate `title_artist_album_changes`
+into more actionable categories:
+
+```text
+Track name changes
+Track artist changes
+Album title changes
+```
+
+The original aggregate count remains in the report and JSON output for
+compatibility, but the field-specific counts make it easier to match diff output
+against duplicate-track findings and other validation rules.
