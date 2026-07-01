@@ -173,6 +173,11 @@ This means:
 - careful versioning
 
 
+## Trust, but verify.
+
+`musicaudit` assumes that metadata editors are acting in good faith. However, different tools have different goals and definitions of "correct." After any large-scale metadata change, use snapshot, diff, and verify to understand what changed before accepting those changes.
+
+
 ## Code is read more often than it is written
 
 Optimize for the reader.
