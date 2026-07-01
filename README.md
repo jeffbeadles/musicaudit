@@ -1,700 +1,223 @@
-# musicaudit - Version 9.7
+# musicaudit
 
-`musicaudit` is a read-only QA toolkit for curated digital music collections.
+`musicaudit` exists to help protect and validate curated digital music collections.
 
-Version 7 adds automatic rule discovery.
+musicaudit is a read-only validation engine for digital music collections.
 
-Each rule now lives in its own module under `musicaudit/rules/`.
-Rules self-register with the rule engine using `@register_rule`.
+Its purpose is to determine the health of a music collection and report its findings completely and accurately.
 
-## Safety rule
+It intentionally does not modify collections. Instead, it provides stable human-readable and machine-readable output that can be consumed by other software.
 
-`musicaudit` is read-only.
+It reduces the cost and complexity of maintaining a high-quality music collection.
 
-It does not modify music files, tags, XML files, playlists, ratings, lyrics, artwork, or file locations.
+A collection should be easy to validate at any time. By making problems inexpensive to find, users can focus their effort on correcting them rather than discovering them.
 
-Future write-capable features, if ever added, should require explicit write-oriented commands and confirmation. The default mode of this project is audit, validate, compare, and report.
+It deliberately separates diagnosis from treatment.
 
-## Install optional dependencies
+It is not a music player.
+It is not a tag editor.
+It is not a library manager.
+It is not intended to own the user's data.
 
-For embedded lyrics/artwork scanning:
+It is an audit and quality assurance tool.
 
-```bash
-python3 -m pip install mutagen
-```
+It  reports facts, not preferences.
 
-For Smart Playlist decoding experiments:
+## Project Contracts
 
-```bash
-python3 -m pip install itunessmart
-```
+Several aspects of musicaudit are considered contractual rather than
+implementation details.
 
-For config file support:
+### Read-only Contract
 
-```bash
-python3 -m pip install pyyaml
-```
+musicaudit will never modify music collections.
 
-## Run from the package directory
+Users should be able to execute any musicaudit command with complete confidence
+that their collection will remain unchanged.
 
-Unzip the archive, then run:
+### JSON Compatibility Contract
 
-```bash
-python3 -m musicaudit health --apple-library ~/Music/Library.xml
-python3 -m musicaudit summary --apple-library ~/Music/Library.xml --scan-files
-python3 -m musicaudit rules --apple-library ~/Music/Library.xml --scan-files
-python3 -m musicaudit diff --old before.xml --new after.xml
-```
+The JSON output is intended to be consumed by other software.
 
-## Commands
+Existing field meanings and rule identifiers will remain stable.
 
-```bash
-python3 -m musicaudit health --apple-library ~/Music/Library.xml
-python3 -m musicaudit summary --apple-library ~/Music/Library.xml --scan-files
-python3 -m musicaudit tokens --apple-library ~/Music/Library.xml
-python3 -m musicaudit playlists --apple-library ~/Music/Library.xml
-python3 -m musicaudit stats --apple-library ~/Music/Library.xml
-python3 -m musicaudit rules --apple-library ~/Music/Library.xml --scan-files
-python3 -m musicaudit verify --apple-library ~/Music/Library.xml --scan-files
-python3 -m musicaudit diff --old before.xml --new after.xml
-```
+Future releases may add new fields, but existing consumers should continue to
+function without modification.
 
-`verify` is now a compatibility alias for `rules`.
+## Core Principles
 
-## Terse output
+### 1. Read-only, period.
 
-```bash
-python3 -m musicaudit health --apple-library ~/Music/Library.xml --terse
-python3 -m musicaudit rules --apple-library ~/Music/Library.xml --scan-files --terse
-python3 -m musicaudit diff --old before.xml --new after.xml --terse
-```
+`musicaudit` must never modify music files, tags, playlists, XML files, artwork, lyrics, filenames, or directory structures.  It only requires read access to the music collection.
 
-## Rule engine
+Audit commands must be safe to run at any time.
 
-Discovered built-in rules currently include:
+### 2. The music files are the source of truth
 
-- `missing-files`
-- `missing-rating`
-- `invalid-rating`
-- `duplicate-track`
-- `low-bitrate`
-- `empty-standard-playlist`
-- `unknown-token`
-- `missing-lyrics` with `--scan-files`
-- `missing-artwork` with `--scan-files`
-- `unreadable-file` with `--scan-files`
-- `xml-tag-mismatch` with `--scan-files`
-- `missing-album-artist`
+The canonical library lives in the audio files and their embedded metadata.
 
-Empty Smart Playlists are not errors. They are often validation checks where zero matching tracks means success.
+Apple Music, iTunes XML, playlists, databases, and sync tools are derived views of that data.
 
-Run selected rules only:
+`musicaudit` should prefer facts measured from the files themselves whenever possible.
 
-```bash
-python3 -m musicaudit rules --apple-library ~/Music/Library.xml --rule missing-rating
-python3 -m musicaudit rules --apple-library ~/Music/Library.xml --rule missing-rating --rule unknown-token
-```
+### 3. There are two providers, Apple Music (--apple-library) and the filesystem (--path) . Both are simply providers, used read-only for information.
 
-Use `--strict` for scripting:
 
-```bash
-python3 -m musicaudit rules --apple-library ~/Music/Library.xml --scan-files --strict
-```
+Future providers may include:
 
-By default, ERROR rules fail and WARN rules report but do not fail. Use this to make warnings fail too:
+- beets databases
+- MusicBrainz/Picard metadata
+- other music library exports
 
-```bash
-python3 -m musicaudit rules --apple-library ~/Music/Library.xml --scan-files --fail-warnings --strict
-```
+The rule engine should not care where the library model came from.
 
-## Config file
+### 4. Rules validate; they do not repair
 
-Optional config locations:
+Rules answer questions such as:
+
+- Is every track rated?
+- Are there missing files?
+- Are there unknown comment tokens?
+- Are duplicate tracks present?
+- Are lyrics embedded?
+- Is artwork embedded?
+- Do embedded tags agree with the exported library?
+
+Rules should report problems clearly.
+
+They should not fix them.
+
+### 5. Human-readable and machine-readable output should come from the same result model
+
+Reports should not be hand-built separately for each output format.
+
+The preferred long-term design is:
 
 ```text
-~/.config/musicaudit/config.yaml
-~/.musicaudit.yaml
+Analysis
+   |
+Result objects
+   |
+Renderers
+   |-- terminal/markdown
+   |-- json
 ```
 
-Example:
+JSON is the primary machine-readable format.
 
-```yaml
-apple_library: ~/Music/Library.xml
-low_bitrate: 256
-bitrate_report: summary
-max_details: 25
-known_tokens:
-  - LIVE
-  - LYRICS
-enabled_rules:
-  - missing-files
-  - missing-rating
-  - invalid-rating
-  - unknown-token
-```
+Terminal output should be optimized for humans.
 
-Then you can run:
+### 6. Every bug deserves a regression test
 
-```bash
-python3 -m musicaudit health
-python3 -m musicaudit rules --scan-files
-python3 -m musicaudit stats
-```
+If a bug is found, the fix is not complete until there is a test that would have caught it.
 
-## Package layout
+Every bug found in early development had a test created for it, including
+
+- low-bitrate threshold mismatch between config and rules
+- verify alias missing parser options
+- over-aggressive refactor changing `set_defaults`
+- empty Smart Playlists being treated as errors
+- And many more
+
+These should never reappear silently.
+
+### 7. Prefer boring, maintainable code
+
+Avoid cleverness when plain code will do.
+
+A rule should be easy to read, easy to test, optional to use, and easy to delete.
+
+Simple modules are better than large central files.
+
+Parse JSON, not terminal/markdown output.
+
+Explicit configuration is better than hidden behavior.
+
+### 8. Reports should emphasize exceptions
+
+Large curated libraries can easily contain tens of thousands of tracks.
+
+Most reports should focus on things that need attention.
+
+Detailed reports are still important, but normal output should help the user answer:
 
 ```text
-musicaudit/
-    cli.py
-    model.py
-    analysis.py
-
-    commands/
-        health.py
-        summary.py
-        tokens.py
-        playlists.py
-        stats.py
-        rules.py
-        verify.py
-        diff.py
-
-    providers/
-        applemusic.py
-        audio.py
-
-    rules/
-        base.py
-        builtin.py
-
-    reports/
-        markdown.py
-
-    util/
-        config.py
-        formatting.py
+Is the library healthy?
+What changed?
+What needs attention?
 ```
 
-This should make future development much easier than editing one large script.
+### 9. The tool should support long-lived collections
+
+Digital music collections often live for decades.
+
+`musicaudit` is designed for long-term maintenance, not short-term convenience.
+
+This means:
+
+- stable CLI behavior
+- clear configuration
+- strong tests
+- predictable output
+- no writes, ever
+- portable metadata assumptions
+- careful versioning
 
 
-## Adding a new rule
+## Code is read more often than it is written
 
-Create a new file in `musicaudit/rules/`, for example:
+Optimize for the reader.
+A module should be understandable without tracing the entire program.
+Small, well-defined components are preferred over large, clever implementations.
+If the intent is not obvious, improve the design before adding comments.
 
-```python
-from .base import Rule, RuleResult, register_rule
+## Design Identity
 
-
-@register_rule
-class MyRule(Rule):
-    id = "my-rule"
-    level = "WARN"
-    description = "Describe what this rule checks"
-
-    def run(self, library, core):
-        problems = []
-        return RuleResult(self.id, self.level, self.description, problems)
-```
-
-The rule engine automatically imports rule modules and registers the rule.
-
-## Per-rule configuration
-
-Example:
-
-```yaml
-rules:
-  duplicate-track:
-    level: warning
-
-  missing-lyrics:
-    enabled: true
-    level: warn
-
-  low-bitrate:
-    enabled: true
-    minimum: 256
-
-  missing-album-artist:
-    enabled: true
-```
-
-You can also restrict which rules run:
-
-```yaml
-enabled_rules:
-  - missing-files
-  - missing-rating
-  - invalid-rating
-  - unknown-token
-  - missing-album-artist
-```
-
-
-## Version 7.1 fix
-
-Fixed low-bitrate rule configuration so the displayed threshold and warning count use the same resolved value.
-
-Resolution order:
-
-1. `--low-bitrate` command-line option
-2. `rules.low-bitrate.threshold` or `rules.low-bitrate.minimum`
-3. global `low_bitrate`
-4. default `256`
-
-Examples:
-
-```yaml
-low_bitrate: 128
-```
-
-or rule-specific:
-
-```yaml
-rules:
-  low-bitrate:
-    threshold: 128
-```
-
-Both the count and the rule description should now match.
-
-
-## Version 7.2 fix
-
-Fixed low-bitrate config resolution in the `rules` / `verify` path.
-
-The rule engine now receives the source of the threshold value:
-
-- CLI
-- config
-- default
-
-This lets it apply the intended precedence correctly.
-
-Debug the resolved config with:
-
-```bash
-python3 -m musicaudit rules --apple-library ~/Music/Library.xml --show-config
-```
-
-Expected examples:
+`musicaudit` is best thought of as:
 
 ```text
-low_bitrate=10
-low_bitrate_source=config
-config_low_bitrate=10
+fsck -n for digital music collections
 ```
 
-or with CLI override:
+or:
 
 ```text
-low_bitrate=128
-low_bitrate_source=cli
-config_low_bitrate=10
+git status / git diff for curated audio libraries
 ```
 
+It should help users understand the state of their collection before syncing, backing up, migrating, or making large metadata changes.
 
-## Version 7.3 fix
+## Non-Goals
 
-Fixed low-bitrate rule counts when the threshold is configured under:
+`musicaudit` will not try to become:
 
-```yaml
-rules:
-  low-bitrate:
-    enabled: true
-    minimum: 12
-```
+- a music player
+- a streaming client
+- a tag editor
+- an album art downloader
+- a lyrics downloader
+- a ripper
+- a recommendation engine
+- a general media manager
 
-The earlier fix corrected the displayed rule threshold, but `audit_core()` was still building
-the low-bitrate track list using the default threshold. Version 7.3 resolves the effective
-threshold before scanning the library so the count and label match.
+Those tools already exist.
 
-Check with:
+`musicaudit` should integrate with them by validating the resulting collection.
 
-```bash
-python3 -m musicaudit rules --apple-library ~/Music/Library.xml --show-config
-```
+## Guiding Question
 
-Look for:
+Before adding a feature, ask:
 
 ```text
-effective_low_bitrate=12
-effective_low_bitrate_source=rule
+Does this help the user validate, understand, preserve, or safely compare their music collection?
 ```
 
+If not, it probably belongs somewhere else.
 
-## Version 8
-
-Version 8 introduces a centralized settings resolver and initial unit tests.
-
-The important design change is that effective settings are resolved once in
-`musicaudit/settings.py`, then passed downstream. This prevents different parts
-of the program from independently deciding things like the low-bitrate threshold.
-
-## Running tests
-
-Install pytest:
-
-```bash
-python3 -m pip install pytest
-```
-
-From the extracted project directory:
-
-```bash
-python3 -m pytest
-```
-
-Included tests cover:
-
-- low-bitrate precedence
-- comment token parsing
-- missing rating rule
-- low-bitrate rule/count consistency
-- empty Smart Playlists not being treated as errors
-
-
-## Version 8.1
-
-Fixed the first test failures by making `audit_core()` tolerate minimal synthetic
-track dictionaries. This makes the unit tests easier to write and reduces hidden
-assumptions about provider output.
-
-
-## Version 8.2
-
-Fixed a refactoring bug where `set_defaults()` was accidentally changed to
-`set_apply_settings()` in command parser setup.
-
-Added CLI integration tests for:
-
-- `python3 -m musicaudit --help`
-- each subcommand's `--help`
-- `python3 -m musicaudit --version`
-
-These tests catch parser-level failures that direct unit tests miss.
-
-
-## Version 8.3
-
-Fixed `verify`, which is a compatibility alias for `rules`, failing with:
+## Project Motto
 
 ```text
-AttributeError: 'Namespace' object has no attribute 'show_config'
+Trust the files.
+Verify everything.
+Change nothing.
 ```
-
-The `rules` command now uses `getattr(args, "show_config", False)`, and the
-`verify` parser also exposes `--show-config`.
-
-
-## Version 8.4
-
-Added a small Apple Music XML fixture library and integration tests that exercise
-the CLI through `musicaudit.cli.main()`.
-
-New tests cover:
-
-- health counts from fixture XML
-- rules output from fixture XML
-- terse rules output
-- low-bitrate rule config from temporary YAML config
-- diff detecting a newly added favorite
-- verify alias behavior
-
-Developer setup:
-
-```bash
-python3 -m pip install -r requirements-dev.txt
-python3 -m pytest
-```
-
-Run only integration tests:
-
-```bash
-python3 -m pytest tests/test_integration_reports.py -v
-```
-
-A helper script is also included:
-
-```bash
-./run_tests.sh
-```
-
-
-## Version 8.5
-
-Fixed user-facing error handling when the XML input file does not exist.
-
-Previously, commands could show a Python traceback after reporting:
-
-```text
-XML file not found
-```
-
-Now the CLI catches user-facing `RuntimeError` exceptions and prints only:
-
-```text
-ERROR: XML file not found: /path/to/file.xml
-```
-
-Added regression tests to ensure missing XML input does not produce a traceback.
-
-
-## Version 8.6
-
-Fixed `unknown-token` handling so tokens listed in the rule-specific
-configuration are treated as allowed tokens.
-
-Example:
-
-```yaml
-rules:
-  unknown-token:
-    allowed:
-      - LIVE
-      - DEMO
-      - REMASTER
-```
-
-These are now included in the effective known-token set used by analysis and
-will not be reported as unknown comment tokens.
-
-Added regression tests for this behavior.
-
-
-## Version 8.7
-
-Added valid JSON output for `rules` and `verify`:
-
-```bash
-python3 -m musicaudit rules --apple-library Library.xml --rule missing-album-artist --format json
-python3 -m musicaudit verify --apple-library Library.xml --format json
-```
-
-The JSON renderer emits only JSON to stdout and no Markdown or human-readable
-header text. This makes it suitable for scripts and for tests that parse output
-with `json.loads()`.
-
-Added regression tests for `missing-album-artist` JSON output.
-
-
-## Version 8.8
-
-Added a filesystem provider.
-
-This allows tests and future reference libraries to be built directly from audio
-files instead of relying on Apple Music XML.
-
-Example:
-
-```bash
-python3 -m musicaudit rules --provider filesystem --path tests/reference-library/audio
-python3 -m musicaudit health --provider filesystem --path /path/to/music
-python3 -m musicaudit rules --provider filesystem --path /path/to/music --format json
-```
-
-The filesystem provider uses `mutagen` to read tags directly from audio files.
-
-This is intended to become the foundation for the long-term test reference
-library. Apple Music XML remains important, but primarily as an Apple Music
-compatibility provider.
-
-A helper script has been added:
-
-```bash
-scripts/generate_reference_library.sh
-```
-
-It uses `ffmpeg` to generate small redistributable dummy MP3 files for tests.
-
-
-Note: the filesystem provider handles common ffmpeg-generated MP3 comment
-metadata, including `TXXX:comment`, so generated reference files can be used
-for comment-token tests.
-
-
-## Version 8.9
-
-Renamed the Apple Music XML input option:
-
-```bash
---xml
-```
-
-has been removed and replaced with:
-
-```bash
---apple-library
-```
-
-Examples:
-
-```bash
-python3 -m musicaudit rules --apple-library Library.xml
-python3 -m musicaudit health --apple-library Library.xml
-```
-
-Filesystem input is now inferred from `--path`, so this works without explicitly
-specifying `--provider filesystem`:
-
-```bash
-python3 -m musicaudit rules --path /path/to/music
-```
-
-The older `library_xml` config key is still accepted as a compatibility fallback,
-but new configs should use:
-
-```yaml
-apple_library: ~/Music/Library.xml
-```
-
-Added regression tests for:
-
-- `--xml` being removed
-- `--apple-library` missing-file error handling
-- `--path` implying the filesystem provider
-
-
-## Version 9.1
-
-Fixed JSON output for embedded-file rules.
-
-Previously, rules such as `missing-artwork`, `missing-lyrics`, and
-`unreadable-file` returned placeholder `null` entries in JSON:
-
-```json
-"items": [null, null, null]
-```
-
-These rules now return the actual matching track objects, making JSON output
-useful for scripts and debugging.
-
-Added regression tests for missing artwork and missing lyrics JSON output.
-
-
-## Version 9.2
-
-Fixed bitrate summary bucket labeling.
-
-`musicaudit summary` incorrectly grouped tracks below 256 kbps into the
-`Below <threshold> kbps` bucket, even when those tracks were above the configured
-low-bitrate threshold.
-
-For example, with `--low-bitrate 64`, 192 kbps tracks were incorrectly reported
-as below 64 kbps. They are now reported in a separate `64-255 kbps` bucket, and
-only tracks actually below 64 kbps are counted as below threshold.
-
-Added regression tests verifying that summary output agrees with the
-`low-bitrate` rule.
-
-
-## Version 9.3
-
-Added JSON output to additional core reporting commands:
-
-```bash
-musicaudit health --format json
-musicaudit summary --format json
-musicaudit diff --format json
-```
-
-`rules` and `verify` already supported JSON.
-
-Also simplified Markdown number formatting by removing bold emphasis around
-numeric values. The reports are less visually noisy and easier to scan.
-
-Added regression tests for health, summary, and diff JSON output, plus a stats
-report test to ensure numeric values are not wrapped in Markdown bold markers.
-
-
-## Version 9.4
-
-Fixed broken-pipe handling for Unix pipelines.
-
-Previously, commands that produced large output could show a Python traceback
-when piped to a command such as `more`, `less`, or `head` and the downstream
-command exited before reading all output.
-
-Example:
-
-```bash
-musicaudit rules --path ~/Music --format json | more
-```
-
-Quitting the pager no longer reports a `BrokenPipeError`.
-
-Added a regression test that closes stdout early and verifies no traceback is
-printed.
-
-
-## Version 9.5
-
-Added snapshot support.
-
-Snapshots capture the current normalized library view as JSON for later
-comparison:
-
-```bash
-musicaudit snapshot --path ~/Music > before.json
-musicaudit snapshot --path ~/Music > after.json
-musicaudit diff --old before.json --new after.json --format json
-```
-
-Snapshot diff is the first filesystem-oriented diff workflow. It avoids needing
-two live paths and keeps the diff process reproducible.
-
-`musicaudit diff` now accepts either Apple Music XML inputs or musicaudit
-snapshot JSON inputs.
-
-Snapshot diffs detect additional filesystem-relevant changes, including:
-
-- album artist changes
-- bitrate changes
-- embedded artwork state changes
-- embedded lyrics state changes
-- audio readability changes
-
-If no before snapshot exists, a snapshot can be created from a backup copy of the
-music collection and compared against a snapshot of the current collection.
-
-Path-to-path diff is intentionally deferred until after 1.0.
-
-
-## Version 9.6
-
-Improved snapshot diff reporting for metadata transitions.
-
-The human diff summary now distinguishes between metadata being added,
-modified, or removed instead of reporting all transitions as generic changes.
-
-For example:
-
-```text
-Album artist added: 15
-Album artist modified: 0
-Album artist removed: 0
-Embedded artwork added: 15
-Embedded artwork removed: 0
-```
-
-This makes it easier to distinguish expected enrichment from unexpected tag
-rewrites or data loss.
-
-
-## Version 9.7
-
-Improved snapshot diff reporting for title/artist/album metadata.
-
-The diff report now splits the previous aggregate `title_artist_album_changes`
-into more actionable categories:
-
-```text
-Track name changes
-Track artist changes
-Album title changes
-```
-
-The original aggregate count remains in the report and JSON output for
-compatibility, but the field-specific counts make it easier to match diff output
-against duplicate-track findings and other validation rules.
