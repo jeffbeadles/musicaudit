@@ -12,12 +12,9 @@ including:
 - missing embedded artwork
 - missing embedded lyrics
 
-It was also used to detect a major metadata corruption issue when a 3rd party tool
-(who will remain nameless and blameless) was used to update missing album art that
-also corrupted other metadata in the music collection.
+It was also used to detect a major metadata corruption issue after a third-party metadata editor (who will remain nameless and blameless) was used to update missing album artwork. While the intended changes were successful, the tool also made extensive unintended modifications to other metadata.
 
-This event drove the creation of the snapshot/diff functionality, to be able to
-detect issues like this in the future before they become widespread.
+This experience led directly to the creation of the snapshot and diff commands. They allow users to capture the state of a music collection before making changes, compare it afterward, and understand exactly what changed before those changes become widespread.
 
 Many of these issues would not have been discovered without the
 validation rules implemented by musicaudit.
