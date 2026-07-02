@@ -1,6 +1,6 @@
 # musicaudit Philosophy
 
-`musicaudit` exists to help protect and validate curated digital music collections.
+`musicaudit` exists to provide objective information about the state of a music collection. It intentionally avoids making decisions for the user. The goal is to enable informed, data-driven decisions, not to automate them.
 
 musicaudit is a read-only validation engine for digital music collections.
 
