@@ -18,7 +18,7 @@ def run(args) -> int:
     args = apply_settings(args, library)
     enabled_rules = args.rule or library.config.get("enabled_rules")
     if getattr(args, "show_config", False):
-        print(f"library_xml={library.xml_path}")
+        print(f"apple_library_xml={library.xml_path}")
         print(f"low_bitrate={args.low_bitrate}")
         print(f"low_bitrate_source={getattr(args, 'low_bitrate_source', 'default')}")
         print(f"config_low_bitrate={library.config.get('low_bitrate', '-')}")

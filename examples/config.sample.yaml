@@ -11,7 +11,7 @@
 
 # Default Apple Music/iTunes XML export.
 # Can always be overridden with --xml.
-library_xml: ~/Music/AppleMusic/Library.xml
+apple_library_xml: ~/Music/AppleMusic/Library.xml
 
 # ----------------------------------------------------------------------
 # General Options

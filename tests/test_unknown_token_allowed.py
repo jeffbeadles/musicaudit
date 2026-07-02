@@ -36,7 +36,7 @@ def test_unknown_token_allowed_config_affects_cli_rule(tmp_path, capsys):
     fixture = __import__("pathlib").Path(__file__).resolve().parents[1] / "tests" / "fixtures" / "sample_library.xml"
     cfg = tmp_path / "config.yaml"
     cfg.write_text(
-        f"library_xml: {fixture}\n"
+        f"apple_library_xml: {fixture}\n"
         "rules:\n"
         "  unknown-token:\n"
         "    allowed:\n"
