@@ -44,7 +44,7 @@ def test_unknown_token_allowed_config_affects_cli_rule(tmp_path, capsys):
         encoding="utf-8",
     )
 
-    code = main(["rules", "--config", str(cfg), "--rule", "unknown-token", "--terse"])
+    code = main(["rules", "--apple-library", str(fixture), "--config", str(cfg), "--rule", "unknown-token", "--terse"])
     captured = capsys.readouterr()
 
     assert code == 0

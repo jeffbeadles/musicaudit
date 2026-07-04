@@ -5,7 +5,7 @@ from musicaudit.cli import main
 
 def test_xml_option_removed(capsys):
     with pytest.raises(SystemExit) as exc:
-        main(["health", "--xml", "Library.xml"])
+        main(["health", "--xml", "Library.xml", "--path", "abc"])
     assert exc.value.code == 2
     captured = capsys.readouterr()
     assert "unrecognized arguments" in captured.err

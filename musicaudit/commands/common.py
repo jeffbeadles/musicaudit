@@ -8,8 +8,9 @@ from ..util.formatting import write_or_print
 
 def add_common_args(parser):
     parser.add_argument("--config", help="Optional config file.")
-    parser.add_argument("--apple-library", dest="apple_library", help="Path to exported Apple Music/iTunes Library XML file.")
-    parser.add_argument("--path", help="Path to a music directory.")
+    inputgroup = parser.add_mutually_exclusive_group(required=True)
+    inputgroup.add_argument("--apple-library", dest="apple_library", help="Path to exported Apple Music/iTunes Library XML file.", default=None)
+    inputgroup.add_argument("--path", help="Path to a music directory.", default=None)
     parser.add_argument("--markdown", "-o", help="Optional Markdown report output path.")
     parser.add_argument("--known-token", action="append", default=[], help="Additional valid comment token.")
 
@@ -41,8 +42,9 @@ def resolve_provider(args):
     if has_apple_library:
         return "applemusic"
 
-    # Default, at least for now.
-    return "applemusic"
+    # This shouldn't be reached, as the command line parser should require
+    #  one of the above to be set...  (but we still check anyway)
+    raise RuntimeError("Missing provider, specify input: --path or --apple-library.")
 
 
 def load_library(args):

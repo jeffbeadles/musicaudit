@@ -42,12 +42,12 @@ def test_low_bitrate_fixture_config_file(tmp_path, capsys):
     cfg = tmp_path / "config.yaml"
     cfg.write_text(f"apple_library_xml: {FIXTURE}\nrules:\n  low-bitrate:\n    minimum: 12\n", encoding="utf-8")
 
-    code, output = run_main(["rules", "--config", str(cfg), "--rule", "low-bitrate", "--show-config"], capsys)
+    code, output = run_main(["rules", "--apple-library", str(FIXTURE), "--config", str(cfg), "--rule", "low-bitrate", "--show-config"], capsys)
     assert code == 0
     assert "low_bitrate=12" in output
     assert "low_bitrate_source=rule" in output
 
-    code, output = run_main(["rules", "--config", str(cfg), "--rule", "low-bitrate", "--terse"], capsys)
+    code, output = run_main(["rules", "--apple-library", str(FIXTURE), "--config", str(cfg), "--rule", "low-bitrate", "--terse"], capsys)
     assert code == 0
     assert "low_bitrate=0" in output
 
