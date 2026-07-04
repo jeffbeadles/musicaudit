@@ -35,7 +35,9 @@ def resolve_provider(args):
     has_apple_library = bool(getattr(args, "apple_library", None))
 
     if has_path and has_apple_library:
-        raise RuntimeError("Specify only one library input: --apple-library or --path.")
+        # This should never happen, as the command line parser _should_ trap it,
+        # but don't leave it to chance.
+        raise RuntimeError("Specify only one input: --path or --apple-library.")
 
     if has_path:
         return "filesystem"
@@ -44,7 +46,7 @@ def resolve_provider(args):
 
     # This shouldn't be reached, as the command line parser should require
     #  one of the above to be set...  (but we still check anyway)
-    raise RuntimeError("Missing provider, specify input: --path or --apple-library.")
+    raise RuntimeError("Missing input, specify: --path or --apple-library.")
 
 
 def load_library(args):
