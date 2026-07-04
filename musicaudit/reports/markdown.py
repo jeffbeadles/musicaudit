@@ -14,7 +14,7 @@ def header(title: str, xml_path=None) -> list[str]:
     lines = [f"# {title}", ""]
     lines.append(f"Generated: {dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     if xml_path:
-        lines.append(f"Library XML: `{xml_path}`")
+        lines.append(f"Library: `{xml_path}`")
     lines.append(f"musicaudit version: {__version__}")
     lines.append("")
     return lines

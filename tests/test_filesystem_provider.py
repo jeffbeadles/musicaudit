@@ -32,7 +32,6 @@ def test_filesystem_provider_rules(tmp_path, capsys):
 
     code = main([
         "rules",
-        "--provider", "filesystem",
         "--path", str(music),
         "--low-bitrate", "64",
         "--rule", "missing-rating",
@@ -55,7 +54,6 @@ def test_filesystem_provider_json(tmp_path, capsys):
 
     code = main([
         "rules",
-        "--provider", "filesystem",
         "--path", str(music),
         "--rule", "missing-rating",
         "--format", "json",

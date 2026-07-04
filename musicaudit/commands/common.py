@@ -8,9 +8,8 @@ from ..util.formatting import write_or_print
 
 def add_common_args(parser):
     parser.add_argument("--config", help="Optional config file.")
-    parser.add_argument("--provider", choices=["applemusic", "filesystem"], default=None, help="Library provider. Usually inferred from --apple-library or --path.")
     parser.add_argument("--apple-library", dest="apple_library", help="Path to exported Apple Music/iTunes Library XML file.")
-    parser.add_argument("--path", help="Path to a music directory. Implies --provider filesystem.")
+    parser.add_argument("--path", help="Path to a music directory.")
     parser.add_argument("--markdown", "-o", help="Optional Markdown report output path.")
     parser.add_argument("--known-token", action="append", default=[], help="Additional valid comment token.")
 
@@ -31,17 +30,18 @@ def apply_settings(args, library):
 
 
 def resolve_provider(args):
-    provider = getattr(args, "provider", None)
     has_path = bool(getattr(args, "path", None))
     has_apple_library = bool(getattr(args, "apple_library", None))
 
     if has_path and has_apple_library:
         raise RuntimeError("Specify only one library input: --apple-library or --path.")
 
-    if provider:
-        return provider
     if has_path:
         return "filesystem"
+    if has_apple_library:
+        return "applemusic"
+
+    # Default, at least for now.
     return "applemusic"
 
 
