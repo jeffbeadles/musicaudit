@@ -11,19 +11,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
       - name: Ruff lint
-        uses: astral-sh/ruff-action@v3
+        uses: astral-sh/ruff-action@v4
         with:
           args: "check --output-format=github ."
 
       - name: Ruff format check
-        uses: astral-sh/ruff-action@v3
+        uses: astral-sh/ruff-action@v4
         with:
           args: "format --check ."
