@@ -1,4 +1,3 @@
-from types import SimpleNamespace
 
 from musicaudit.rules.engine import run_rules
 from musicaudit.analysis import audit_core

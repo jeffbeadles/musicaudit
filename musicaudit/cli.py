@@ -38,19 +38,6 @@ def main(argv=None) -> int:
         parser.print_help()
         return 2
 
-    known_commands = {
-        "health",
-        "summary",
-        "tokens",
-        "playlists",
-        "stats",
-        "verify",
-        "rules",
-        "diff",
-        "snapshot",
-        "fix",
-    }
-
     # Convenience: "musicaudit --xml Library.xml" means summary.
     if raw_args[0].startswith("-") and raw_args[0] != "--version":
         raw_args = ["summary"] + raw_args

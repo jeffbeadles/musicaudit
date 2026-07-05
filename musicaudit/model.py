@@ -4,7 +4,7 @@ import collections
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 
 RATING_RE = re.compile(r"\bS([1-5])\b")
 BAD_RATING_RE = re.compile(r"\bS([0-9]+)\b")

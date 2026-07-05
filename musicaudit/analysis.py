@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import collections
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from .model import analyze_comment_tokens, count_duplicates
 from .providers.audio import read_audio_details
