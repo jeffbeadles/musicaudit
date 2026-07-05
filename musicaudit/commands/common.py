@@ -7,17 +7,38 @@ from ..providers.filesystem import load_filesystem_library
 def add_common_args(parser):
     parser.add_argument("--config", help="Optional config file.")
     inputgroup = parser.add_mutually_exclusive_group(required=True)
-    inputgroup.add_argument("--apple-library", dest="apple_library", nargs='?', const='', default=None,
-        help="Path to exported Apple Music/iTunes Library XML file.")
-    inputgroup.add_argument("--path", nargs='?', const='', default=None,
-        help="Path to a music directory.")
-    parser.add_argument("--markdown", "-o", help="Optional Markdown report output path.")
-    parser.add_argument("--known-token", action="append", default=[], help="Additional valid comment token.")
+    inputgroup.add_argument(
+        "--apple-library",
+        dest="apple_library",
+        nargs="?",
+        const="",
+        default=None,
+        help="Path to exported Apple Music/iTunes Library XML file.",
+    )
+    inputgroup.add_argument(
+        "--path", nargs="?", const="", default=None, help="Path to a music directory."
+    )
+    parser.add_argument(
+        "--markdown", "-o", help="Optional Markdown report output path."
+    )
+    parser.add_argument(
+        "--known-token",
+        action="append",
+        default=[],
+        help="Additional valid comment token.",
+    )
 
 
 def add_detail_args(parser):
-    parser.add_argument("--max-details", type=int, default=None, help="Maximum detailed rows per section. Use 0 to suppress details.")
-    parser.add_argument("--verbose", action="store_true", help="Shortcut for --max-details 100.")
+    parser.add_argument(
+        "--max-details",
+        type=int,
+        default=None,
+        help="Maximum detailed rows per section. Use 0 to suppress details.",
+    )
+    parser.add_argument(
+        "--verbose", action="store_true", help="Shortcut for --max-details 100."
+    )
 
 
 def apply_settings(args, library):

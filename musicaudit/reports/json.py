@@ -47,7 +47,10 @@ def json_rule_item(item: Any) -> Any:
     if isinstance(item, tuple) and len(item) == 2 and isinstance(item[1], list):
         return {
             "key": json_safe(item[0]),
-            "tracks": [compact_track(t) if isinstance(t, dict) else json_safe(t) for t in item[1]],
+            "tracks": [
+                compact_track(t) if isinstance(t, dict) else json_safe(t)
+                for t in item[1]
+            ],
         }
 
     # XML tag mismatch items are tuples of: (track, label, xml_value, file_value)
@@ -77,7 +80,11 @@ def rules_json_report(library, rules, fail_warnings: bool) -> tuple[str, int]:
         "apple_library_xml": str(library.xml_path),
         "summary": {
             "rules": len(rules),
-            "failed": sum(1 for r in rules if r.count > 0 and (r.level == "ERROR" or fail_warnings)),
+            "failed": sum(
+                1
+                for r in rules
+                if r.count > 0 and (r.level == "ERROR" or fail_warnings)
+            ),
             "warnings": sum(1 for r in rules if r.count > 0 and r.level == "WARN"),
             "errors": sum(1 for r in rules if r.count > 0 and r.level == "ERROR"),
         },
@@ -95,7 +102,6 @@ def rules_json_report(library, rules, fail_warnings: bool) -> tuple[str, int]:
     }
 
     return json.dumps(payload, indent=2, sort_keys=True) + "\n", 1 if failed else 0
-
 
 
 def library_ref(library) -> dict:
@@ -140,7 +146,9 @@ def core_summary(library, core, scan_files: bool, low_bitrate: int) -> dict:
     return payload
 
 
-def health_json_report(library, core, scan_files: bool, low_bitrate: int) -> tuple[str, int]:
+def health_json_report(
+    library, core, scan_files: bool, low_bitrate: int
+) -> tuple[str, int]:
     fail_checks = [
         len(core["file_missing"]),
         len(core["unrated_tracks"]),
@@ -157,7 +165,9 @@ def health_json_report(library, core, scan_files: bool, low_bitrate: int) -> tup
         },
         "health": core_summary(library, core, scan_files, low_bitrate),
     }
-    return json.dumps(payload, indent=2, sort_keys=True) + "\n", 1 if status == "FAIL" else 0
+    return json.dumps(
+        payload, indent=2, sort_keys=True
+    ) + "\n", 1 if status == "FAIL" else 0
 
 
 def bitrate_summary(tracks, low_bitrate: int) -> dict:
@@ -186,7 +196,9 @@ def bitrate_summary(tracks, low_bitrate: int) -> dict:
     }
 
 
-def summary_json_report(library, core, scan_files: bool, low_bitrate: int) -> tuple[str, int]:
+def summary_json_report(
+    library, core, scan_files: bool, low_bitrate: int
+) -> tuple[str, int]:
     total = len(library.tracks)
     payload = {
         "status": "OK",
@@ -194,9 +206,7 @@ def summary_json_report(library, core, scan_files: bool, low_bitrate: int) -> tu
             "source": str(library.xml_path),
         },
         "health": core_summary(library, core, scan_files, low_bitrate),
-        "ratings": {
-            f"S{i}": core["rating_counts"][f"S{i}"] for i in range(5, 0, -1)
-        },
+        "ratings": {f"S{i}": core["rating_counts"][f"S{i}"] for i in range(5, 0, -1)},
         "unrated": len(core["unrated_tracks"]),
         "favorites": core["favorites"],
         "formats": dict(core["ext_counts"].most_common()),
@@ -208,8 +218,12 @@ def summary_json_report(library, core, scan_files: bool, low_bitrate: int) -> tu
             f"S{i}": round((core["rating_counts"][f"S{i}"] / total) * 100, 2)
             for i in range(5, 0, -1)
         }
-        payload["rating_percentages"]["unrated"] = round((len(core["unrated_tracks"]) / total) * 100, 2)
-        payload["rating_percentages"]["favorites"] = round((core["favorites"] / total) * 100, 2)
+        payload["rating_percentages"]["unrated"] = round(
+            (len(core["unrated_tracks"]) / total) * 100, 2
+        )
+        payload["rating_percentages"]["favorites"] = round(
+            (core["favorites"] / total) * 100, 2
+        )
 
     if scan_files:
         payload["embedded"] = {
@@ -298,24 +312,58 @@ def diff_json_report(old_input, new_input, d) -> tuple[str, int]:
                 }
                 for o, n, old_fav, new_fav in d["fav_changed"]
             ],
-            "comment_changes": [change_track_pair(pair) for pair in d["comments_changed"]],
+            "comment_changes": [
+                change_track_pair(pair) for pair in d["comments_changed"]
+            ],
             "path_changes": [change_track_pair(pair) for pair in d["path_changed"]],
-            "title_artist_album_changes": [change_track_pair(pair) for pair in d["title_changed"]],
-            "track_name_changes": [change_track_pair(pair) for pair in d.get("track_name_changed", [])],
-            "track_artist_changes": [change_track_pair(pair) for pair in d.get("track_artist_changed", [])],
-            "album_title_changes": [change_track_pair(pair) for pair in d.get("album_changed", [])],
-            "album_artist_changes": [change_track_pair(pair) for pair in d.get("album_artist_changed", [])],
-            "album_artist_added": [change_track_pair(pair) for pair in d.get("album_artist_added", [])],
-            "album_artist_modified": [change_track_pair(pair) for pair in d.get("album_artist_modified", [])],
-            "album_artist_removed": [change_track_pair(pair) for pair in d.get("album_artist_removed", [])],
-            "bitrate_changes": [change_track_pair(pair) for pair in d.get("bitrate_changed", [])],
-            "artwork_changes": [change_track_pair(pair) for pair in d.get("artwork_changed", [])],
-            "artwork_added": [change_track_pair(pair) for pair in d.get("artwork_added", [])],
-            "artwork_removed": [change_track_pair(pair) for pair in d.get("artwork_removed", [])],
-            "lyrics_changes": [change_track_pair(pair) for pair in d.get("lyrics_changed", [])],
-            "lyrics_added": [change_track_pair(pair) for pair in d.get("lyrics_added", [])],
-            "lyrics_removed": [change_track_pair(pair) for pair in d.get("lyrics_removed", [])],
-            "readability_changes": [change_track_pair(pair) for pair in d.get("readable_changed", [])],
+            "title_artist_album_changes": [
+                change_track_pair(pair) for pair in d["title_changed"]
+            ],
+            "track_name_changes": [
+                change_track_pair(pair) for pair in d.get("track_name_changed", [])
+            ],
+            "track_artist_changes": [
+                change_track_pair(pair) for pair in d.get("track_artist_changed", [])
+            ],
+            "album_title_changes": [
+                change_track_pair(pair) for pair in d.get("album_changed", [])
+            ],
+            "album_artist_changes": [
+                change_track_pair(pair) for pair in d.get("album_artist_changed", [])
+            ],
+            "album_artist_added": [
+                change_track_pair(pair) for pair in d.get("album_artist_added", [])
+            ],
+            "album_artist_modified": [
+                change_track_pair(pair) for pair in d.get("album_artist_modified", [])
+            ],
+            "album_artist_removed": [
+                change_track_pair(pair) for pair in d.get("album_artist_removed", [])
+            ],
+            "bitrate_changes": [
+                change_track_pair(pair) for pair in d.get("bitrate_changed", [])
+            ],
+            "artwork_changes": [
+                change_track_pair(pair) for pair in d.get("artwork_changed", [])
+            ],
+            "artwork_added": [
+                change_track_pair(pair) for pair in d.get("artwork_added", [])
+            ],
+            "artwork_removed": [
+                change_track_pair(pair) for pair in d.get("artwork_removed", [])
+            ],
+            "lyrics_changes": [
+                change_track_pair(pair) for pair in d.get("lyrics_changed", [])
+            ],
+            "lyrics_added": [
+                change_track_pair(pair) for pair in d.get("lyrics_added", [])
+            ],
+            "lyrics_removed": [
+                change_track_pair(pair) for pair in d.get("lyrics_removed", [])
+            ],
+            "readability_changes": [
+                change_track_pair(pair) for pair in d.get("readable_changed", [])
+            ],
             "new_playlists": [json_safe(p) for p in d["playlist_added"]],
             "removed_playlists": [json_safe(p) for p in d["playlist_removed"]],
             "smart_playlist_changes": [

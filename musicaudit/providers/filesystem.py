@@ -14,14 +14,26 @@ except ImportError:
 
 
 SUPPORTED_EXTENSIONS = {
-    ".mp3", ".m4a", ".mp4", ".aac", ".flac", ".alac",
-    ".ogg", ".oga", ".opus", ".wav", ".aiff", ".aif",
+    ".mp3",
+    ".m4a",
+    ".mp4",
+    ".aac",
+    ".flac",
+    ".alac",
+    ".ogg",
+    ".oga",
+    ".opus",
+    ".wav",
+    ".aiff",
+    ".aif",
 }
 
 
 def require_mutagen() -> None:
     if MutagenFile is None:
-        raise RuntimeError("filesystem provider requires mutagen. Install with: python3 -m pip install mutagen")
+        raise RuntimeError(
+            "filesystem provider requires mutagen. Install with: python3 -m pip install mutagen"
+        )
 
 
 def tag_first(tags: Any, names: List[str]) -> str:
@@ -102,7 +114,10 @@ def extract_tags(audio: Any) -> Dict[str, str]:
     # TXXX:comment. Accept either form when a normalized comment was not found.
     if not out["comments"]:
         for key in sorted(keys):
-            if key.startswith("COMM") or key.lower() in {"txxx:comment", "txxx:comments"}:
+            if key.startswith("COMM") or key.lower() in {
+                "txxx:comment",
+                "txxx:comments",
+            }:
                 out["comments"] = tag_first(tags, [key])
                 break
 
@@ -206,7 +221,9 @@ def load_filesystem_library(args) -> Library:
     config = load_config(getattr(args, "config", None))
     root_arg = getattr(args, "path", None) or config.get("music_root")
     if not root_arg:
-        raise RuntimeError("--path is required for filesystem provider unless music_root is set in config.")
+        raise RuntimeError(
+            "--path is required for filesystem provider unless music_root is set in config."
+        )
 
     root = expand_path(root_arg)
     if not root.exists():
@@ -221,7 +238,9 @@ def load_filesystem_library(args) -> Library:
     if configured_exts:
         extensions = {("." + e.lower().lstrip(".")) for e in configured_exts}
 
-    files = sorted(p for p in root.rglob("*") if p.is_file() and p.suffix.lower() in extensions)
+    files = sorted(
+        p for p in root.rglob("*") if p.is_file() and p.suffix.lower() in extensions
+    )
     tracks = [read_track(path, root, i + 1) for i, path in enumerate(files)]
 
     return Library(

@@ -17,10 +17,19 @@ def run(args) -> int:
     args = apply_settings(args, library)
     core = audit_core(library, args.scan_files, args.low_bitrate)
     if args.format == "json":
-        report, code = summary_json_report(library, core, args.scan_files, args.low_bitrate)
+        report, code = summary_json_report(
+            library, core, args.scan_files, args.low_bitrate
+        )
         return write_or_print(report, args.markdown) or code
 
-    report = summary_report(library, core, args.scan_files, args.bitrate_report, args.low_bitrate, args.max_details)
+    report = summary_report(
+        library,
+        core,
+        args.scan_files,
+        args.bitrate_report,
+        args.low_bitrate,
+        args.max_details,
+    )
     return write_or_print(report, args.markdown)
 
 
@@ -29,7 +38,11 @@ def register(sub):
     add_common_args(p)
     add_detail_args(p)
     p.add_argument("--scan-files", action="store_true")
-    p.add_argument("--bitrate-report", choices=["summary", "full", "exceptions", "none"], default=None)
+    p.add_argument(
+        "--bitrate-report",
+        choices=["summary", "full", "exceptions", "none"],
+        default=None,
+    )
     p.add_argument("--low-bitrate", type=int, default=None)
     p.add_argument("--format", choices=["markdown", "json"], default="markdown")
     p.set_defaults(func=run)

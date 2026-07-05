@@ -12,7 +12,12 @@ from ..reports.json import diff_json_report
 
 
 def track_key(t):
-    return str(t.get("persistent_id") or t.get("relative_path") or t.get("path") or t.get("track_id"))
+    return str(
+        t.get("persistent_id")
+        or t.get("relative_path")
+        or t.get("path")
+        or t.get("track_id")
+    )
 
 
 def comparable_path(t):
@@ -133,7 +138,11 @@ def analyze_diff(old_tracks, new_tracks, old_playlists, new_playlists, known_tok
             comments_changed.append((o, n))
         if comparable_path(o) != comparable_path(n):
             path_changed.append((o, n))
-        if (o.get("name"), o.get("artist"), o.get("album")) != (n.get("name"), n.get("artist"), n.get("album")):
+        if (o.get("name"), o.get("artist"), o.get("album")) != (
+            n.get("name"),
+            n.get("artist"),
+            n.get("album"),
+        ):
             title_changed.append((o, n))
         if (o.get("name") or "") != (n.get("name") or ""):
             track_name_changed.append((o, n))
@@ -141,7 +150,9 @@ def analyze_diff(old_tracks, new_tracks, old_playlists, new_playlists, known_tok
             track_artist_changed.append((o, n))
         if (o.get("album") or "") != (n.get("album") or ""):
             album_changed.append((o, n))
-        album_artist_change = text_transition(o.get("album_artist"), n.get("album_artist"))
+        album_artist_change = text_transition(
+            o.get("album_artist"), n.get("album_artist")
+        )
         if album_artist_change != "unchanged":
             album_artist_changed.append((o, n))
             if album_artist_change == "added":
@@ -154,7 +165,9 @@ def analyze_diff(old_tracks, new_tracks, old_playlists, new_playlists, known_tok
         if o.get("bit_rate") != n.get("bit_rate"):
             bitrate_changed.append((o, n))
 
-        artwork_change = bool_transition(o.get("embedded_has_artwork"), n.get("embedded_has_artwork"))
+        artwork_change = bool_transition(
+            o.get("embedded_has_artwork"), n.get("embedded_has_artwork")
+        )
         if artwork_change != "unchanged":
             artwork_changed.append((o, n))
             if artwork_change == "added":
@@ -162,7 +175,9 @@ def analyze_diff(old_tracks, new_tracks, old_playlists, new_playlists, known_tok
             elif artwork_change == "removed":
                 artwork_removed.append((o, n))
 
-        lyrics_change = bool_transition(o.get("embedded_has_lyrics"), n.get("embedded_has_lyrics"))
+        lyrics_change = bool_transition(
+            o.get("embedded_has_lyrics"), n.get("embedded_has_lyrics")
+        )
         if lyrics_change != "unchanged":
             lyrics_changed.append((o, n))
             if lyrics_change == "added":
@@ -185,7 +200,9 @@ def analyze_diff(old_tracks, new_tracks, old_playlists, new_playlists, known_tok
     smart_changed = []
     for k in sorted(op_keys & np_keys):
         if op[k].get("is_smart") or np[k].get("is_smart"):
-            if op[k].get("smart_criteria_hash") != np[k].get("smart_criteria_hash") or op[k].get("smart_info_hash") != np[k].get("smart_info_hash"):
+            if op[k].get("smart_criteria_hash") != np[k].get(
+                "smart_criteria_hash"
+            ) or op[k].get("smart_info_hash") != np[k].get("smart_info_hash"):
                 smart_changed.append((op[k], np[k]))
 
     return locals()
@@ -246,7 +263,13 @@ def terse_diff(d) -> str:
 
 def verbose_diff(old_input, new_input, d) -> str:
     lines = header("Music Library Diff")
-    lines += [f"Old input: `{old_input}`", f"New input: `{new_input}`", "", "## Summary", ""]
+    lines += [
+        f"Old input: `{old_input}`",
+        f"New input: `{new_input}`",
+        "",
+        "## Summary",
+        "",
+    ]
     lines += [
         f"- New songs: {fmt_int(len(d['added']))}",
         f"- Removed songs: {fmt_int(len(d['removed']))}",
@@ -281,49 +304,65 @@ def verbose_diff(old_input, new_input, d) -> str:
         for t in d["added_favorites"][:max_details]:
             info = analyze_comment_tokens(t.get("comments") or "", set())
             rating = info["rating"] or "missing rating"
-            lines.append(f"- {t.get('artist', '')} - {t.get('name', '')} ({t.get('album', '')}) [{rating} FAV]")
+            lines.append(
+                f"- {t.get('artist', '')} - {t.get('name', '')} ({t.get('album', '')}) [{rating} FAV]"
+            )
         lines.append("")
 
     if d["rating_changed"]:
         lines += ["## First 25 Rating Changes", ""]
         for o, n, old_rating, new_rating in d["rating_changed"][:max_details]:
-            lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}: {old_rating or 'missing'} -> {new_rating or 'missing'}")
+            lines.append(
+                f"- {n.get('artist', '')} - {n.get('name', '')}: {old_rating or 'missing'} -> {new_rating or 'missing'}"
+            )
         lines.append("")
 
     if d["track_name_changed"]:
         lines += ["## First 25 Track Name Changes", ""]
         for o, n in d["track_name_changed"][:max_details]:
-            lines.append(f"- {n.get('artist', '')}: `{o.get('name', '')}` -> `{n.get('name', '')}`")
+            lines.append(
+                f"- {n.get('artist', '')}: `{o.get('name', '')}` -> `{n.get('name', '')}`"
+            )
         lines.append("")
 
     if d["track_artist_changed"]:
         lines += ["## First 25 Track Artist Changes", ""]
         for o, n in d["track_artist_changed"][:max_details]:
-            lines.append(f"- {n.get('name', '')}: `{o.get('artist', '')}` -> `{n.get('artist', '')}`")
+            lines.append(
+                f"- {n.get('name', '')}: `{o.get('artist', '')}` -> `{n.get('artist', '')}`"
+            )
         lines.append("")
 
     if d["album_changed"]:
         lines += ["## First 25 Album Title Changes", ""]
         for o, n in d["album_changed"][:max_details]:
-            lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}: `{o.get('album', '')}` -> `{n.get('album', '')}`")
+            lines.append(
+                f"- {n.get('artist', '')} - {n.get('name', '')}: `{o.get('album', '')}` -> `{n.get('album', '')}`"
+            )
         lines.append("")
 
     if d["album_artist_added"]:
         lines += ["## First 25 Album Artist Additions", ""]
         for o, n in d["album_artist_added"][:max_details]:
-            lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}: added `{n.get('album_artist', '')}`")
+            lines.append(
+                f"- {n.get('artist', '')} - {n.get('name', '')}: added `{n.get('album_artist', '')}`"
+            )
         lines.append("")
 
     if d["album_artist_modified"]:
         lines += ["## First 25 Album Artist Modifications", ""]
         for o, n in d["album_artist_modified"][:max_details]:
-            lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}: `{o.get('album_artist', '')}` -> `{n.get('album_artist', '')}`")
+            lines.append(
+                f"- {n.get('artist', '')} - {n.get('name', '')}: `{o.get('album_artist', '')}` -> `{n.get('album_artist', '')}`"
+            )
         lines.append("")
 
     if d["album_artist_removed"]:
         lines += ["## First 25 Album Artist Removals", ""]
         for o, n in d["album_artist_removed"][:max_details]:
-            lines.append(f"- {n.get('artist', '')} - {n.get('name', '')}: removed `{o.get('album_artist', '')}`")
+            lines.append(
+                f"- {n.get('artist', '')} - {n.get('name', '')}: removed `{o.get('album_artist', '')}`"
+            )
         lines.append("")
 
     if d["artwork_added"]:
@@ -353,7 +392,9 @@ def verbose_diff(old_input, new_input, d) -> str:
     if d["smart_changed"]:
         lines += ["## Smart Playlist Changes", ""]
         for o, n in d["smart_changed"][:max_details]:
-            lines.append(f"- {n.get('name')}: criteria {o.get('smart_criteria_hash')} -> {n.get('smart_criteria_hash')}; info {o.get('smart_info_hash')} -> {n.get('smart_info_hash')}")
+            lines.append(
+                f"- {n.get('name')}: criteria {o.get('smart_criteria_hash')} -> {n.get('smart_criteria_hash')}; info {o.get('smart_info_hash')} -> {n.get('smart_info_hash')}"
+            )
         lines.append("")
 
     return "\n".join(lines)
@@ -380,12 +421,19 @@ def run(args) -> int:
         report, code = diff_json_report(old_input["path"], new_input["path"], d)
         return write_or_print(report, args.markdown) or code
 
-    report = terse_diff(d) if args.terse else verbose_diff(old_input["path"], new_input["path"], d)
+    report = (
+        terse_diff(d)
+        if args.terse
+        else verbose_diff(old_input["path"], new_input["path"], d)
+    )
     return write_or_print(report, args.markdown)
 
 
 def register(sub):
-    p = sub.add_parser("diff", help="Compare Apple library XML files or musicaudit snapshot JSON files.")
+    p = sub.add_parser(
+        "diff",
+        help="Compare Apple library XML files or musicaudit snapshot JSON files.",
+    )
     p.add_argument("--config")
     p.add_argument("--old", required=True)
     p.add_argument("--new", required=True)

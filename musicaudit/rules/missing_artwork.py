@@ -9,4 +9,6 @@ class MissingArtworkRule(Rule):
     requires_scan_files = True
 
     def run(self, library, core):
-        return RuleResult(self.id, self.level, self.description, core["artwork_missing_tracks"])
+        return RuleResult(
+            self.id, self.level, self.description, core["artwork_missing_tracks"]
+        )

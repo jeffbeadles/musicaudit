@@ -19,6 +19,15 @@ def register(sub):
     p.add_argument("--strict", action="store_true")
     p.add_argument("--fail-warnings", action="store_true")
     p.add_argument("--rule", action="append")
-    p.add_argument("--show-config", action="store_true", help="Show resolved configuration and exit.")
-    p.add_argument("--format", choices=["markdown", "json"], default="markdown", help="Output format.")
+    p.add_argument(
+        "--show-config",
+        action="store_true",
+        help="Show resolved configuration and exit.",
+    )
+    p.add_argument(
+        "--format",
+        choices=["markdown", "json"],
+        default="markdown",
+        help="Output format.",
+    )
     p.set_defaults(func=run)

@@ -21,23 +21,27 @@ def snapshot_track(track: dict, root: Path | None = None) -> dict:
         item["path"] = str(path)
         try:
             if root is not None:
-                item["relative_path"] = str(Path(path).resolve().relative_to(root.resolve()))
+                item["relative_path"] = str(
+                    Path(path).resolve().relative_to(root.resolve())
+                )
         except Exception:
             item["relative_path"] = None
     else:
         item["relative_path"] = None
 
-    item.update({
-        "genre": track.get("genre"),
-        "kind": track.get("kind"),
-        "year": track.get("year"),
-        "size": track.get("size"),
-        "sample_rate": track.get("sample_rate"),
-        "total_time": track.get("total_time"),
-        "embedded_has_lyrics": track.get("embedded_has_lyrics"),
-        "embedded_has_artwork": track.get("embedded_has_artwork"),
-        "audio_readable": track.get("audio_readable"),
-    })
+    item.update(
+        {
+            "genre": track.get("genre"),
+            "kind": track.get("kind"),
+            "year": track.get("year"),
+            "size": track.get("size"),
+            "sample_rate": track.get("sample_rate"),
+            "total_time": track.get("total_time"),
+            "embedded_has_lyrics": track.get("embedded_has_lyrics"),
+            "embedded_has_artwork": track.get("embedded_has_artwork"),
+            "audio_readable": track.get("audio_readable"),
+        }
+    )
     return item
 
 
@@ -95,5 +99,7 @@ def register(sub):
     add_common_args(p)
     p.add_argument("--scan-files", action="store_true")
     p.add_argument("--low-bitrate", type=int, default=None)
-    p.add_argument("--output", help="Optional snapshot output path. Defaults to stdout.")
+    p.add_argument(
+        "--output", help="Optional snapshot output path. Defaults to stdout."
+    )
     p.set_defaults(func=run)

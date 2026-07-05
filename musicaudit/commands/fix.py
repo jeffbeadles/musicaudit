@@ -13,9 +13,11 @@ Use 'verify', 'rules', 'summary', or 'diff' to identify issues.
 Use other tools to make changes.
 
 """)
-    return(1)
+    return 1
+
 
 ## Developers, See docs/philosophy.md for the rationale.
+
 
 def register(sub):
     p = sub.add_parser("fix", help="fix command")

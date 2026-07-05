@@ -18,13 +18,7 @@ def args(**kwargs):
 
 
 def test_unknown_token_allowed_is_added_to_known_tokens():
-    config = {
-        "rules": {
-            "unknown-token": {
-                "allowed": ["LIVE", "DEMO"]
-            }
-        }
-    }
+    config = {"rules": {"unknown-token": {"allowed": ["LIVE", "DEMO"]}}}
 
     settings = resolve_settings(args(), config)
 
@@ -33,7 +27,12 @@ def test_unknown_token_allowed_is_added_to_known_tokens():
 
 
 def test_unknown_token_allowed_config_affects_cli_rule(tmp_path, capsys):
-    fixture = __import__("pathlib").Path(__file__).resolve().parents[1] / "tests" / "fixtures" / "sample_library.xml"
+    fixture = (
+        __import__("pathlib").Path(__file__).resolve().parents[1]
+        / "tests"
+        / "fixtures"
+        / "sample_library.xml"
+    )
     cfg = tmp_path / "config.yaml"
     cfg.write_text(
         f"apple_library_xml: {fixture}\n"
@@ -44,7 +43,18 @@ def test_unknown_token_allowed_config_affects_cli_rule(tmp_path, capsys):
         encoding="utf-8",
     )
 
-    code = main(["rules", "--apple-library", str(fixture), "--config", str(cfg), "--rule", "unknown-token", "--terse"])
+    code = main(
+        [
+            "rules",
+            "--apple-library",
+            str(fixture),
+            "--config",
+            str(cfg),
+            "--rule",
+            "unknown-token",
+            "--terse",
+        ]
+    )
     captured = capsys.readouterr()
 
     assert code == 0

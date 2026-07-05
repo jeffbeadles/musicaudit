@@ -88,8 +88,12 @@ def extract_playlists(plist: Dict[str, Any]) -> List[Dict[str, Any]]:
                 "persistent_id": playlist.get("Playlist Persistent ID"),
                 "folder": bool(playlist.get("Folder")),
                 "visible": playlist.get("Visible", True),
-                "smart_info_hash": data_hash(playlist.get("Smart Info")) if is_smart else "-",
-                "smart_criteria_hash": data_hash(playlist.get("Smart Criteria")) if is_smart else "-",
+                "smart_info_hash": data_hash(playlist.get("Smart Info"))
+                if is_smart
+                else "-",
+                "smart_criteria_hash": data_hash(playlist.get("Smart Criteria"))
+                if is_smart
+                else "-",
             }
         )
     return output
@@ -97,9 +101,15 @@ def extract_playlists(plist: Dict[str, Any]) -> List[Dict[str, Any]]:
 
 def load_library(args) -> Library:
     config = load_config(getattr(args, "config", None))
-    xml_arg = getattr(args, "apple_library", None) or config.get("apple_library") or config.get("apple_library_xml")
+    xml_arg = (
+        getattr(args, "apple_library", None)
+        or config.get("apple_library")
+        or config.get("apple_library_xml")
+    )
     if not xml_arg:
-        raise RuntimeError("--apple-library is required unless apple_library is set in config.")
+        raise RuntimeError(
+            "--apple-library is required unless apple_library is set in config."
+        )
 
     xml_path = expand_path(xml_arg)
     if not xml_path.exists():

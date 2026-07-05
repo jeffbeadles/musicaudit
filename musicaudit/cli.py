@@ -4,7 +4,18 @@ import argparse
 import sys
 
 from . import __version__
-from .commands import health, summary, tokens, playlists, stats, verify, diff, rules, snapshot, fix
+from .commands import (
+    health,
+    summary,
+    tokens,
+    playlists,
+    stats,
+    verify,
+    diff,
+    rules,
+    snapshot,
+    fix,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -12,7 +23,9 @@ def build_parser() -> argparse.ArgumentParser:
         prog="musicaudit",
         description="Read-only music library QA toolkit for curated digital music collections.",
     )
-    parser.add_argument("--version", action="version", version=f"musicaudit {__version__}")
+    parser.add_argument(
+        "--version", action="version", version=f"musicaudit {__version__}"
+    )
 
     sub = parser.add_subparsers(dest="command")
 

@@ -14,10 +14,16 @@ def run(args) -> int:
     args = apply_settings(args, library)
     core = audit_core(library, args.scan_files, args.low_bitrate)
     if args.format == "json":
-        report, code = health_json_report(library, core, args.scan_files, args.low_bitrate)
+        report, code = health_json_report(
+            library, core, args.scan_files, args.low_bitrate
+        )
         return write_or_print(report, args.markdown) or code
 
-    report = terse_health(library, core, args.scan_files, args.low_bitrate) if args.terse else health_report(library, core, args.scan_files, args.low_bitrate)
+    report = (
+        terse_health(library, core, args.scan_files, args.low_bitrate)
+        if args.terse
+        else health_report(library, core, args.scan_files, args.low_bitrate)
+    )
     return write_or_print(report, args.markdown)
 
 

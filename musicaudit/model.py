@@ -27,7 +27,9 @@ def analyze_comment_tokens(comments: str, known_tokens: set[str]) -> Dict[str, A
     bad_rating_matches = BAD_RATING_RE.findall(comments)
 
     ratings = [f"S{x}" for x in rating_matches]
-    bad_ratings = [f"S{x}" for x in bad_rating_matches if x not in {"1", "2", "3", "4", "5"}]
+    bad_ratings = [
+        f"S{x}" for x in bad_rating_matches if x not in {"1", "2", "3", "4", "5"}
+    ]
 
     known = set(known_tokens) | {f"S{i}" for i in range(1, 6)}
     unknown = [t for t in tokens if t not in known]
@@ -45,8 +47,12 @@ def analyze_comment_tokens(comments: str, known_tokens: set[str]) -> Dict[str, A
     }
 
 
-def count_duplicates(tracks: List[Dict[str, Any]]) -> List[Tuple[Tuple[str, str, str], List[Dict[str, Any]]]]:
-    groups: Dict[Tuple[str, str, str], List[Dict[str, Any]]] = collections.defaultdict(list)
+def count_duplicates(
+    tracks: List[Dict[str, Any]],
+) -> List[Tuple[Tuple[str, str, str], List[Dict[str, Any]]]]:
+    groups: Dict[Tuple[str, str, str], List[Dict[str, Any]]] = collections.defaultdict(
+        list
+    )
     for t in tracks:
         key = (
             str(t.get("artist", "")).strip().lower(),

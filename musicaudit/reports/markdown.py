@@ -21,7 +21,9 @@ def header(title: str, xml_path=None) -> list[str]:
 
 
 def append_track(lines, t, prefix="-"):
-    lines.append(f"{prefix} {t.get('artist', '')} - {t.get('name', '')} ({t.get('album', '')})")
+    lines.append(
+        f"{prefix} {t.get('artist', '')} - {t.get('name', '')} ({t.get('album', '')})"
+    )
 
 
 def append_details(lines, core, low_bitrate: int, max_details: int, playlists=None):
@@ -45,24 +47,32 @@ def append_details(lines, core, low_bitrate: int, max_details: int, playlists=No
         lines.append("")
 
     if core["low_bitrate_tracks"][:max_details]:
-        lines.append(f"### First {max_details} Low Bitrate Tracks Below {low_bitrate} kbps")
+        lines.append(
+            f"### First {max_details} Low Bitrate Tracks Below {low_bitrate} kbps"
+        )
         lines.append("")
         for t in core["low_bitrate_tracks"][:max_details]:
-            lines.append(f"- {bitrate_label(t.get('bit_rate'))}: {t.get('artist', '')} - {t.get('name', '')} ({t.get('album', '')})")
+            lines.append(
+                f"- {bitrate_label(t.get('bit_rate'))}: {t.get('artist', '')} - {t.get('name', '')} ({t.get('album', '')})"
+            )
         lines.append("")
 
     if core["file_missing"][:max_details]:
         lines.append(f"### First {max_details} Missing Files")
         lines.append("")
         for t in core["file_missing"][:max_details]:
-            lines.append(f"- {t.get('artist', '')} - {t.get('name', '')}: `{t.get('path')}`")
+            lines.append(
+                f"- {t.get('artist', '')} - {t.get('name', '')}: `{t.get('path')}`"
+            )
         lines.append("")
 
     if core["invalid_tracks"][:max_details]:
         lines.append(f"### First {max_details} Invalid Rating Token Tracks")
         lines.append("")
         for t in core["invalid_tracks"][:max_details]:
-            lines.append(f"- {t.get('artist', '')} - {t.get('name', '')}: `{t.get('comments')}`")
+            lines.append(
+                f"- {t.get('artist', '')} - {t.get('name', '')}: `{t.get('comments')}`"
+            )
         lines.append("")
 
     if core["duplicates"][:max_details]:
@@ -70,14 +80,18 @@ def append_details(lines, core, low_bitrate: int, max_details: int, playlists=No
         lines.append("")
         for _, group in core["duplicates"][:max_details]:
             sample = group[0]
-            lines.append(f"- {sample.get('artist', '')} - {sample.get('album', '')} - {sample.get('name', '')}: {len(group)} copies")
+            lines.append(
+                f"- {sample.get('artist', '')} - {sample.get('album', '')} - {sample.get('name', '')}: {len(group)} copies"
+            )
         lines.append("")
 
     if core.get("tag_mismatches") and core["tag_mismatches"][:max_details]:
         lines.append(f"### First {max_details} XML/File Tag Mismatches")
         lines.append("")
         for t, label, xml_val, tag_val in core["tag_mismatches"][:max_details]:
-            lines.append(f"- {t.get('artist', '')} - {t.get('name', '')}: {label}: XML=`{xml_val}` File=`{tag_val}`")
+            lines.append(
+                f"- {t.get('artist', '')} - {t.get('name', '')}: {label}: XML=`{xml_val}` File=`{tag_val}`"
+            )
         lines.append("")
 
 
@@ -150,9 +164,20 @@ def terse_health(library, core, scan_files: bool, low_bitrate: int) -> str:
     return "\n".join(lines)
 
 
-def summary_report(library, core, scan_files: bool, bitrate_report_mode: str, low_bitrate: int, max_details: int) -> str:
+def summary_report(
+    library,
+    core,
+    scan_files: bool,
+    bitrate_report_mode: str,
+    low_bitrate: int,
+    max_details: int,
+) -> str:
     lines = header("Music Library Audit", library.xml_path)
-    lines.append(health_report(library, core, scan_files, low_bitrate).split("## Health Check", 1)[1].strip())
+    lines.append(
+        health_report(library, core, scan_files, low_bitrate)
+        .split("## Health Check", 1)[1]
+        .strip()
+    )
     lines.append("")
 
     total = len(library.tracks)
@@ -161,8 +186,12 @@ def summary_report(library, core, scan_files: bool, bitrate_report_mode: str, lo
         key = f"S{i}"
         count = core["rating_counts"][key]
         lines.append(f"- {key}: {fmt_int(count)} ({fmt_percent(count, total)})")
-    lines.append(f"- Unrated / missing S#: {fmt_int(len(core['unrated_tracks']))} ({fmt_percent(len(core['unrated_tracks']), total)})")
-    lines.append(f"- FAV: {fmt_int(core['favorites'])} ({fmt_percent(core['favorites'], total)})")
+    lines.append(
+        f"- Unrated / missing S#: {fmt_int(len(core['unrated_tracks']))} ({fmt_percent(len(core['unrated_tracks']), total)})"
+    )
+    lines.append(
+        f"- FAV: {fmt_int(core['favorites'])} ({fmt_percent(core['favorites'], total)})"
+    )
     lines.append("")
 
     lines += ["## Formats", ""]
@@ -183,7 +212,10 @@ def summary_report(library, core, scan_files: bool, bitrate_report_mode: str, lo
             "",
         ]
     else:
-        lines += ["Skipped. Use `--scan-files` to inspect embedded lyrics and artwork directly from audio files.", ""]
+        lines += [
+            "Skipped. Use `--scan-files` to inspect embedded lyrics and artwork directly from audio files.",
+            "",
+        ]
 
     append_details(lines, core, low_bitrate, max_details, library.playlists)
     return "\n".join(lines)
@@ -210,7 +242,14 @@ def append_bitrate(lines, tracks, mode: str, low_bitrate: int):
 
     if mode == "summary":
         lines += ["## Bitrate Summary", ""]
-        for key in ["Lossless / Hi-Res", "320 kbps and above", "256-319 kbps", f"{low_bitrate}-255 kbps", f"Below {low_bitrate} kbps", "unknown"]:
+        for key in [
+            "Lossless / Hi-Res",
+            "320 kbps and above",
+            "256-319 kbps",
+            f"{low_bitrate}-255 kbps",
+            f"Below {low_bitrate} kbps",
+            "unknown",
+        ]:
             if summary_counts[key]:
                 lines.append(f"- {key}: {fmt_int(summary_counts[key])}")
         lines.append("")
@@ -237,8 +276,12 @@ def tokens_report(library, core, max_details: int) -> str:
         key = f"S{i}"
         count = core["rating_counts"][key]
         lines.append(f"- {key}: {fmt_int(count)} ({fmt_percent(count, total)})")
-    lines.append(f"- Missing S#: {fmt_int(len(core['unrated_tracks']))} ({fmt_percent(len(core['unrated_tracks']), total)})")
-    lines.append(f"- FAV: {fmt_int(core['favorites'])} ({fmt_percent(core['favorites'], total)})")
+    lines.append(
+        f"- Missing S#: {fmt_int(len(core['unrated_tracks']))} ({fmt_percent(len(core['unrated_tracks']), total)})"
+    )
+    lines.append(
+        f"- FAV: {fmt_int(core['favorites'])} ({fmt_percent(core['favorites'], total)})"
+    )
     lines.append("")
     append_details(lines, core, 256, max_details)
     return "\n".join(lines)
@@ -252,7 +295,11 @@ def playlists_report(library, decode_output: str | None, max_details: int) -> st
     standard = [p for p in playlists if not p["is_smart"] and not p["folder"]]
     folders = [p for p in playlists if p["folder"]]
     empty_smart = [p for p in playlists if p["is_smart"] and p["item_count"] == 0]
-    empty_standard = [p for p in playlists if not p["is_smart"] and not p["folder"] and p["item_count"] == 0]
+    empty_standard = [
+        p
+        for p in playlists
+        if not p["is_smart"] and not p["folder"] and p["item_count"] == 0
+    ]
 
     lines += [
         "## Playlist Summary",
@@ -270,13 +317,19 @@ def playlists_report(library, decode_output: str | None, max_details: int) -> st
         "|---|---:|---|---|",
     ]
     for p in sorted(smart, key=lambda x: x["name"].lower()):
-        lines.append(f"| {p['name']} | {fmt_int(p['item_count'])} | `{p['smart_criteria_hash']}` | `{p['smart_info_hash']}` |")
+        lines.append(
+            f"| {p['name']} | {fmt_int(p['item_count'])} | `{p['smart_criteria_hash']}` | `{p['smart_info_hash']}` |"
+        )
     lines.append("")
 
     if max_details > 0:
         lines += [f"## Largest Playlists, First {max_details}", ""]
-        for p in sorted(playlists, key=lambda x: x["item_count"], reverse=True)[:max_details]:
-            kind = "folder" if p["folder"] else ("smart" if p["is_smart"] else "standard")
+        for p in sorted(playlists, key=lambda x: x["item_count"], reverse=True)[
+            :max_details
+        ]:
+            kind = (
+                "folder" if p["folder"] else ("smart" if p["is_smart"] else "standard")
+            )
             lines.append(f"- {p['name']} - {fmt_int(p['item_count'])} items ({kind})")
         lines.append("")
 
@@ -286,7 +339,9 @@ def playlists_report(library, decode_output: str | None, max_details: int) -> st
     return "\n".join(lines)
 
 
-def stats_report(library, core, max_details: int, histogram_scale: str, histogram_width: int) -> str:
+def stats_report(
+    library, core, max_details: int, histogram_scale: str, histogram_width: int
+) -> str:
     lines = header("Music Library Statistics", library.xml_path)
     rating_values = [v for v in core["rating_values"] if isinstance(v, int)]
     avg_rating = sum(rating_values) / len(rating_values) if rating_values else 0
@@ -295,7 +350,11 @@ def stats_report(library, core, max_details: int, histogram_scale: str, histogra
     if rating_values:
         sorted_vals = sorted(rating_values)
         mid = len(sorted_vals) // 2
-        median = sorted_vals[mid] if len(sorted_vals) % 2 else (sorted_vals[mid - 1] + sorted_vals[mid]) / 2
+        median = (
+            sorted_vals[mid]
+            if len(sorted_vals) % 2
+            else (sorted_vals[mid - 1] + sorted_vals[mid]) / 2
+        )
         lines.append(f"- Median rating: {median:.1f}")
     lines.append("")
 
@@ -346,10 +405,15 @@ def rules_report(library, rules, max_details: int, fail_warnings: bool, terse: b
 
     lines = header("Music Library Rule Check", library.xml_path)
     lines += ["FAIL" if failed else "PASS", "", "## Rules", ""]
-    lines += ["| Rule | Level | Status | Count | Description |", "|---|---|---|---:|---|"]
+    lines += [
+        "| Rule | Level | Status | Count | Description |",
+        "|---|---|---|---:|---|",
+    ]
     for r in rules:
         status = "PASS" if r.passed else r.level
-        lines.append(f"| `{r.id}` | {r.level} | {status} | {fmt_int(r.count)} | {r.description} |")
+        lines.append(
+            f"| `{r.id}` | {r.level} | {status} | {fmt_int(r.count)} | {r.description} |"
+        )
     lines.append("")
 
     if max_details > 0:
@@ -361,19 +425,29 @@ def rules_report(library, rules, max_details: int, fail_warnings: bool, terse: b
             for item in r.items[:max_details]:
                 if item is None:
                     continue
-                if isinstance(item, tuple) and len(item) == 2 and isinstance(item[1], list):
+                if (
+                    isinstance(item, tuple)
+                    and len(item) == 2
+                    and isinstance(item[1], list)
+                ):
                     sample = item[1][0]
-                    lines.append(f"- {sample.get('artist', '')} - {sample.get('album', '')} - {sample.get('name', '')}: {len(item[1])} copies")
+                    lines.append(
+                        f"- {sample.get('artist', '')} - {sample.get('album', '')} - {sample.get('name', '')}: {len(item[1])} copies"
+                    )
                 elif isinstance(item, tuple) and len(item) == 4:
                     t, label, xml_val, tag_val = item
-                    lines.append(f"- {t.get('artist', '')} - {t.get('name', '')}: {label}: XML=`{xml_val}` File=`{tag_val}`")
+                    lines.append(
+                        f"- {t.get('artist', '')} - {t.get('name', '')}: {label}: XML=`{xml_val}` File=`{tag_val}`"
+                    )
                 elif isinstance(item, dict) and "token" in item:
                     lines.append(f"- `{item['token']}`: {fmt_int(item['count'])}")
                 elif isinstance(item, dict):
                     lines.append(f"- {item}")
                 else:
                     try:
-                        lines.append(f"- {item.get('artist', '')} - {item.get('name', '')} ({item.get('album', '')})")
+                        lines.append(
+                            f"- {item.get('artist', '')} - {item.get('name', '')} ({item.get('album', '')})"
+                        )
                     except Exception:
                         lines.append(f"- {item}")
             lines.append("")

@@ -9,12 +9,17 @@ FIXTURE = ROOT / "tests" / "fixtures" / "missing_album_artist.xml"
 
 
 def test_missing_album_artist_json_is_valid(capsys):
-    code = main([
-        "rules",
-        "--apple-library", str(FIXTURE),
-        "--rule", "missing-album-artist",
-        "--format", "json",
-    ])
+    code = main(
+        [
+            "rules",
+            "--apple-library",
+            str(FIXTURE),
+            "--rule",
+            "missing-album-artist",
+            "--format",
+            "json",
+        ]
+    )
     captured = capsys.readouterr()
 
     assert code == 0
@@ -29,12 +34,17 @@ def test_missing_album_artist_json_is_valid(capsys):
 
 
 def test_verify_json_is_valid(capsys):
-    code = main([
-        "verify",
-        "--apple-library", str(FIXTURE),
-        "--rule", "missing-album-artist",
-        "--format", "json",
-    ])
+    code = main(
+        [
+            "verify",
+            "--apple-library",
+            str(FIXTURE),
+            "--rule",
+            "missing-album-artist",
+            "--format",
+            "json",
+        ]
+    )
     captured = capsys.readouterr()
 
     assert code == 0

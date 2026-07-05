@@ -18,7 +18,9 @@ class MissingAlbumArtistRule(Rule):
 
         for tracks in albums.values():
             artists = {t.get("artist", "") for t in tracks if t.get("artist")}
-            album_artists = {t.get("album_artist", "") for t in tracks if t.get("album_artist")}
+            album_artists = {
+                t.get("album_artist", "") for t in tracks if t.get("album_artist")
+            }
             if len(artists) > 1 and not album_artists:
                 problems.append(tracks[0])
 

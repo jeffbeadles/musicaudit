@@ -5,13 +5,18 @@ from musicaudit.cli import main
 
 
 def snapshot(path: Path, tracks: list[dict]):
-    path.write_text(json.dumps({
-        "schema": "musicaudit.snapshot.v1",
-        "source": "test",
-        "provider": "filesystem",
-        "tracks": tracks,
-        "playlists": [],
-    }), encoding="utf-8")
+    path.write_text(
+        json.dumps(
+            {
+                "schema": "musicaudit.snapshot.v1",
+                "source": "test",
+                "provider": "filesystem",
+                "tracks": tracks,
+                "playlists": [],
+            }
+        ),
+        encoding="utf-8",
+    )
 
 
 def base_track():

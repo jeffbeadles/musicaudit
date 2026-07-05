@@ -11,7 +11,9 @@ except ImportError:
 
 def require_mutagen() -> None:
     if MutagenFile is None:
-        raise RuntimeError("--scan-files requires mutagen. Install with: python3 -m pip install mutagen")
+        raise RuntimeError(
+            "--scan-files requires mutagen. Install with: python3 -m pip install mutagen"
+        )
 
 
 def tag_first(tags: Any, names: List[str]) -> str:
@@ -75,7 +77,11 @@ def extract_common_tags(audio: Any) -> Dict[str, str]:
             for c in candidates:
                 if c in keys:
                     val = tags[c]
-                    out[target] = str(val.text[0]) if hasattr(val, "text") and val.text else str(val)
+                    out[target] = (
+                        str(val.text[0])
+                        if hasattr(val, "text") and val.text
+                        else str(val)
+                    )
                     break
 
     return out

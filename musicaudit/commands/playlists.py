@@ -30,7 +30,10 @@ def try_itunessmart_decode(xml_path, max_lines=300):
         if result.returncode == 0 and text:
             lines = text.splitlines()
             if len(lines) > max_lines:
-                text = "\n".join(lines[:max_lines]) + f"\n... truncated after {max_lines} lines ..."
+                text = (
+                    "\n".join(lines[:max_lines])
+                    + f"\n... truncated after {max_lines} lines ..."
+                )
             return text
     return "Found itunessmart, but could not determine its command-line syntax automatically."
 
@@ -39,7 +42,9 @@ def run(args) -> int:
     library = load_library(args)
     args = apply_settings(args, library)
     decoded = try_itunessmart_decode(library.xml_path) if args.decode_smart else None
-    return write_or_print(playlists_report(library, decoded, args.max_details), args.markdown)
+    return write_or_print(
+        playlists_report(library, decoded, args.max_details), args.markdown
+    )
 
 
 def register(sub):

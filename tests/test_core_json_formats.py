@@ -30,7 +30,9 @@ def test_summary_json_is_valid(capsys):
 
 
 def test_diff_json_is_valid(capsys):
-    code = main(["diff", "--old", str(FIXTURE), "--new", str(FIXTURE_AFTER), "--format", "json"])
+    code = main(
+        ["diff", "--old", str(FIXTURE), "--new", str(FIXTURE_AFTER), "--format", "json"]
+    )
     captured = capsys.readouterr()
     assert code == 0
     payload = json.loads(captured.out)

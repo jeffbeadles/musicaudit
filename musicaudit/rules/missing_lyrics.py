@@ -9,4 +9,6 @@ class MissingLyricsRule(Rule):
     requires_scan_files = True
 
     def run(self, library, core):
-        return RuleResult(self.id, self.level, self.description, core["lyrics_missing_tracks"])
+        return RuleResult(
+            self.id, self.level, self.description, core["lyrics_missing_tracks"]
+        )

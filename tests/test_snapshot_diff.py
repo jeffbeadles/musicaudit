@@ -49,12 +49,14 @@ def test_diff_accepts_snapshot_json(capsys, tmp_path):
         "audio_readable": True,
     }
     changed = dict(base)
-    changed.update({
-        "path": "/new/Artist/Album/song.mp3",
-        "comments": "S5 FAV",
-        "bit_rate": 256,
-        "embedded_has_artwork": True,
-    })
+    changed.update(
+        {
+            "path": "/new/Artist/Album/song.mp3",
+            "comments": "S5 FAV",
+            "bit_rate": 256,
+            "embedded_has_artwork": True,
+        }
+    )
 
     snapshot(old, [base])
     snapshot(new, [changed])
@@ -78,16 +80,18 @@ def test_diff_accepts_snapshot_json(capsys, tmp_path):
 def test_diff_identical_snapshot_json_has_no_changes(capsys, tmp_path):
     old = tmp_path / "before.json"
     new = tmp_path / "after.json"
-    tracks = [{
-        "persistent_id": "FS-one",
-        "relative_path": "one.mp3",
-        "name": "One",
-        "artist": "Artist",
-        "album": "Album",
-        "comments": "S5",
-        "bit_rate": 192,
-        "embedded_has_artwork": True,
-    }]
+    tracks = [
+        {
+            "persistent_id": "FS-one",
+            "relative_path": "one.mp3",
+            "name": "One",
+            "artist": "Artist",
+            "album": "Album",
+            "comments": "S5",
+            "bit_rate": 192,
+            "embedded_has_artwork": True,
+        }
+    ]
     snapshot(old, tracks)
     snapshot(new, tracks)
 

@@ -52,7 +52,9 @@ def resolve_settings(args, config: Dict[str, Any]) -> Settings:
     if getattr(args, "verbose", False) and max_details == 25:
         max_details = 100
 
-    bitrate_report = getattr(args, "bitrate_report", None) or config.get("bitrate_report", "summary")
+    bitrate_report = getattr(args, "bitrate_report", None) or config.get(
+        "bitrate_report", "summary"
+    )
 
     known = set(config.get("known_tokens", []) or [])
     known.add("FAV")

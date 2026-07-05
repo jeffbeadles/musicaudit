@@ -5,7 +5,9 @@ from typing import List, Optional
 from . import discover_rules
 
 
-def rule_config(config: dict, rule_id: str, low_bitrate: int, low_bitrate_source: str = "default") -> dict:
+def rule_config(
+    config: dict, rule_id: str, low_bitrate: int, low_bitrate_source: str = "default"
+) -> dict:
     rules_cfg = config.get("rules", {}) or {}
     specific = dict(rules_cfg.get(rule_id, {}) or {})
     merged = dict(specific)
@@ -60,6 +62,7 @@ def run_rules(
 
 def _unknown_rule_result(rule_id: str):
     from .base import RuleResult
+
     return RuleResult(
         "unknown-rule",
         "ERROR",
