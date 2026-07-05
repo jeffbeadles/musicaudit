@@ -3,7 +3,7 @@ from __future__ import annotations
 from .common import add_common_args, add_detail_args, apply_settings, load_library
 from ..providers.audio import require_mutagen
 from ..analysis import audit_core
-from ..rules.engine import run_rules
+from ..rules.engine import run_rules, find_rules
 from ..reports.markdown import rules_report
 from ..reports.json import rules_json_report
 from ..util.formatting import write_or_print
@@ -18,12 +18,15 @@ def run(args) -> int:
     args = apply_settings(args, library)
     enabled_rules = args.rule or library.config.get("enabled_rules")
     if getattr(args, "show_config", False):
-        print(f"apple_library_xml={library.xml_path}")
+        print(f"Library={library.xml_path}")
         print(f"low_bitrate={args.low_bitrate}")
         print(f"low_bitrate_source={getattr(args, 'low_bitrate_source', 'default')}")
         print(f"config_low_bitrate={library.config.get('low_bitrate', '-')}")
         rules_cfg = library.config.get("rules", {}) or {}
         print(f"rule_low_bitrate_config={rules_cfg.get('low-bitrate', {})}")
+
+        rulelist = find_rules(library)
+        print(f"rule_list={rulelist}")
         return 0
 
     core = audit_core(library, args.scan_files, args.low_bitrate)

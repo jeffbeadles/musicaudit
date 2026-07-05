@@ -17,6 +17,15 @@ def rule_config(
     return merged
 
 
+# Get unfiltered list of all rules, for help/usage
+def find_rules(library):
+    classes = discover_rules()
+
+    selected = sorted(classes.keys())
+
+    return selected
+
+
 def run_rules(
     library,
     core,
