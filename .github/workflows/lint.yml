@@ -1,10 +1,10 @@
-name: Lint
+name: Code Quality
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
 
 jobs:
   ruff:
@@ -18,9 +18,12 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Run Ruff Lint and Format Checks
+      - name: Ruff lint
         uses: astral-sh/ruff-action@v3
         with:
-          # This checks both code quality rules and formatting consistency
-          args: "check --output-format=github . && ruff format --check ."
+          args: "check --output-format=github ."
 
+      - name: Ruff format check
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: "format --check ."
