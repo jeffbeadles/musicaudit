@@ -9,8 +9,10 @@ from ..util.formatting import write_or_print
 def add_common_args(parser):
     parser.add_argument("--config", help="Optional config file.")
     inputgroup = parser.add_mutually_exclusive_group(required=True)
-    inputgroup.add_argument("--apple-library", dest="apple_library", help="Path to exported Apple Music/iTunes Library XML file.", default=None)
-    inputgroup.add_argument("--path", help="Path to a music directory.", default=None)
+    inputgroup.add_argument("--apple-library", dest="apple_library", nargs='?', const='', default=None,
+        help="Path to exported Apple Music/iTunes Library XML file.")
+    inputgroup.add_argument("--path", nargs='?', const='', default=None,
+        help="Path to a music directory.")
     parser.add_argument("--markdown", "-o", help="Optional Markdown report output path.")
     parser.add_argument("--known-token", action="append", default=[], help="Additional valid comment token.")
 
@@ -31,17 +33,18 @@ def apply_settings(args, library):
 
 
 def resolve_provider(args):
-    has_path = bool(getattr(args, "path", None))
-    has_apple_library = bool(getattr(args, "apple_library", None))
+    has_path = getattr(args, "path", None)
+    has_apple_library = getattr(args, "apple_library", None)
 
-    if has_path and has_apple_library:
+    # Are both set?
+    if (has_path is not None) and (has_apple_library is not None):
         # This should never happen, as the command line parser _should_ trap it,
         # but don't leave it to chance.
         raise RuntimeError("Specify only one input: --path or --apple-library.")
 
-    if has_path:
+    if has_path is not None:
         return "filesystem"
-    if has_apple_library:
+    if has_apple_library is not None:
         return "applemusic"
 
     # This shouldn't be reached, as the command line parser should require
