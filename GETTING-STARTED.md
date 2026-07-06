@@ -3,11 +3,13 @@
 Notice: musicaudit treats your data as completely read-only. It will never write to, or change your data.
 
 ### How to install:
+```console
     pip install musicaudit*.whl
-
+```
 and you can verify it's installed properly by running:
-
+```console
     musicaudit --help
+```
 
 ## How to access your music collection; Two ways, Apple iTunes Library.xml and on disk
 
@@ -19,20 +21,27 @@ and you can verify it's installed properly by running:
 
 `--apple-library /path/to/Library.xml`
 
-#### Then, for each of the musicaudit commands, use the --path or --apple-library option you desire.  Note for Apple users, you can (and should) run musicaudit twice, once to check the iTunes data, and a second time to check your media files.  You will find that iTunes does not always update the music files with metadata like album artwork.
-
+#### Then, for each of the musicaudit commands, use the --path or --apple-library option you desire.  Note for Apple users, you can (and should) run musicaudit twice, once to check the iTunes data, and a second time to check your media files.  You will find that iTunes does not always update the music files with metadata like album artwork. (I speak from experience!)
 
 ### You can get a quick view of your library's health by running:
+```console
     musicaudit health --path ~/Music
+```
 
 ### You can run all known rules by running:
+```console
     musicaudit rules --path ~/Music
+```
 
 ### To see all available rules, run:
+```console
     musicaudit rules --showconfig --path ~/Music
+```
 
 ### if there is a particular rule you want to investigate in detail, you can run it:
+```console
     musicaudit rules --rule missing-artwork-track --path ~/Music --format json
+```
 
 ### What is a good workflow for making changes to your music collection?
 
@@ -57,10 +66,9 @@ musicaudit diff --old ~/musicaudit-snapshot_before.json --new ~/musicaudit-snaps
 
 ## Other information about musicaudit
 ###  Can I safely point musicaudit at my only copy of a 10,000+ track music collection?
-    Yes. musicaudit is non-destructive by design and by project contract.  It does not need write access to the music collection, and can work just fine with a read-only filesystem.
-
-    However, no software can protect against hardware failure, user error, or accidental deletion. Regardless of what tools you use, maintaining a current backup of your music collection is strongly recommended. (I speak from experience!)
+#### Yes. musicaudit is non-destructive by design and by project contract.  It does not need write access to the music collection, and can work just fine with a read-only filesystem.
+#### However, no software can protect against hardware failure, user error, or accidental deletion. Regardless of what tools you use, maintaining a current backup of your music collection is strongly recommended. (I speak from experience!)
 
 ### I am looking for a Mac tool to add lyrics to my music collection, do you have any suggestions?
-    I have used LyricsFinder, but there are several others.  You should find one that meeds your needs.	They are not associated with musicaudit.
+#### I have used LyricsFinder, but there are several others.  You should find one that meeds your needs.	They are not associated with musicaudit.
 
