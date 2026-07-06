@@ -22,6 +22,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="musicaudit",
         description="Read-only music library QA toolkit for curated digital music collections.",
+        epilog="Documentation: https://github.com/jeffbeadles/musicaudit",
     )
     parser.add_argument(
         "--version", action="version", version=f"musicaudit {__version__}"
@@ -50,10 +51,6 @@ def main(argv=None) -> int:
     if not raw_args:
         parser.print_help()
         return 2
-
-    # Convenience: "musicaudit --xml Library.xml" means summary.
-    if raw_args[0].startswith("-") and raw_args[0] != "--version":
-        raw_args = ["summary"] + raw_args
 
     args = parser.parse_args(raw_args)
     if args.command is None:
