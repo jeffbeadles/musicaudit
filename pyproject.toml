@@ -22,3 +22,10 @@ include = ["musicaudit*"]
 
 [project.scripts]
 musicaudit = "musicaudit.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/jeffbeadles/musicaudit"
+Documentation = "https://github.com/jeffbeadles/musicaudit"
+Repository = "https://github.com/jeffbeadles/musicaudit"
+Issues = "https://github.com/jeffbeadles/musicaudit/issues"
+
