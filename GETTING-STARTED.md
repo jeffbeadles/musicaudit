@@ -40,12 +40,18 @@ Here is my flow, now that I've been using musicaudit for some time, and it's sav
 
 * Create a backup.
 * Create a snapshot
+```console
 musicaudit snapshot --path ~/Music > ~/musicaudit-snapshot_before.json
+```
 * Make desired changes, to metadata, adding songs, etc...
 * Create a second snapshot
+```console
 musicaudit snapshot --path ~/Music > ~/musicaudit-snapshot_after.json
+```
 * Review the differences between the snapshots to ensure no undesired changes
+```console
 musicaudit diff --old ~/musicaudit-snapshot_before.json --new ~/musicaudit-snapshot_after.json --format json
+```
 * If there are changes you do not want/expect, you can either revert from the backup, or use another tool to reverse the changes.  The diff command should identify exactly what has changed.  Only *you* know what should be done to repair it.
 
 
