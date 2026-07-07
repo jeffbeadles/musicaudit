@@ -20,7 +20,7 @@ def run(args) -> int:
         report, code = summary_json_report(
             library, core, args.scan_files, args.low_bitrate
         )
-        return write_or_print(report, args.markdown) or code
+        return write_or_print(report, args.output) or code
 
     report = summary_report(
         library,
@@ -30,7 +30,7 @@ def run(args) -> int:
         args.low_bitrate,
         args.max_details,
     )
-    return write_or_print(report, args.markdown)
+    return write_or_print(report, args.output)
 
 
 def register(sub):

@@ -10,7 +10,7 @@ def run(args) -> int:
     library = load_library(args)
     args = apply_settings(args, library)
     core = audit_core(library, False, 256)
-    return write_or_print(tokens_report(library, core, args.max_details), args.markdown)
+    return write_or_print(tokens_report(library, core, args.max_details), args.output)
 
 
 def register(sub):

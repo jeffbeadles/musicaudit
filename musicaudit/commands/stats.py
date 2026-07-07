@@ -14,7 +14,7 @@ def run(args) -> int:
         stats_report(
             library, core, args.max_details, args.histogram_scale, args.histogram_width
         ),
-        args.markdown,
+        args.output,
     )
 
 

@@ -43,7 +43,7 @@ def run(args) -> int:
     args = apply_settings(args, library)
     decoded = try_itunessmart_decode(library.xml_path) if args.decode_smart else None
     return write_or_print(
-        playlists_report(library, decoded, args.max_details), args.markdown
+        playlists_report(library, decoded, args.max_details), args.output
     )
 
 

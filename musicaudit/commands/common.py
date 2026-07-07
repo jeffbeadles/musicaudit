@@ -18,9 +18,7 @@ def add_common_args(parser):
     inputgroup.add_argument(
         "--path", nargs="?", const="", default=None, help="Path to a music directory."
     )
-    parser.add_argument(
-        "--markdown", "-o", help="Optional Markdown report output path."
-    )
+    parser.add_argument("--output", "-o", help="Optional report output path.")
     parser.add_argument(
         "--known-token",
         action="append",

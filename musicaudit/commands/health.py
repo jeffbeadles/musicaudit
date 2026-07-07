@@ -17,14 +17,14 @@ def run(args) -> int:
         report, code = health_json_report(
             library, core, args.scan_files, args.low_bitrate
         )
-        return write_or_print(report, args.markdown) or code
+        return write_or_print(report, args.output) or code
 
     report = (
         terse_health(library, core, args.scan_files, args.low_bitrate)
         if args.terse
         else health_report(library, core, args.scan_files, args.low_bitrate)
     )
-    return write_or_print(report, args.markdown)
+    return write_or_print(report, args.output)
 
 
 def register(sub):

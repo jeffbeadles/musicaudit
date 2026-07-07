@@ -419,14 +419,14 @@ def run(args) -> int:
 
     if args.format == "json":
         report, code = diff_json_report(old_input["path"], new_input["path"], d)
-        return write_or_print(report, args.markdown) or code
+        return write_or_print(report, args.output) or code
 
     report = (
         terse_diff(d)
         if args.terse
         else verbose_diff(old_input["path"], new_input["path"], d)
     )
-    return write_or_print(report, args.markdown)
+    return write_or_print(report, args.output)
 
 
 def register(sub):
@@ -437,7 +437,7 @@ def register(sub):
     p.add_argument("--config")
     p.add_argument("--old", required=True)
     p.add_argument("--new", required=True)
-    p.add_argument("--markdown", "-o")
+    p.add_argument("--output", "-o")
     p.add_argument("--known-token", action="append", default=[])
     p.add_argument("--terse", action="store_true")
     p.add_argument("--format", choices=["markdown", "json"], default="markdown")

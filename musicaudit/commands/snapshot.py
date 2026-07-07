@@ -99,7 +99,4 @@ def register(sub):
     add_common_args(p)
     p.add_argument("--scan-files", action="store_true")
     p.add_argument("--low-bitrate", type=int, default=None)
-    p.add_argument(
-        "--output", help="Optional snapshot output path. Defaults to stdout."
-    )
     p.set_defaults(func=run)

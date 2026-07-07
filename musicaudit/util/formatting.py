@@ -15,9 +15,9 @@ def fmt_percent(part, total) -> str:
     return f"{(part / total) * 100:.1f}%"
 
 
-def write_or_print(report: str, markdown_path=None) -> int:
-    if markdown_path:
-        path = Path(markdown_path).expanduser()
+def write_or_print(report: str, output_path=None) -> int:
+    if output_path:
+        path = Path(output_path).expanduser()
         path.write_text(report, encoding="utf-8")
         return 0
 

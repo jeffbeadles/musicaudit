@@ -44,7 +44,7 @@ def run(args) -> int:
         report, code = rules_report(
             library, results, args.max_details, args.fail_warnings, args.terse
         )
-    write_or_print(report, args.markdown)
+    write_or_print(report, args.output)
     return code if args.strict else 0
 
 
