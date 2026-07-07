@@ -35,7 +35,7 @@ and you can verify it's installed properly by running:
 
 ### To see all available rules, run:
 ```console
-    musicaudit rules --showconfig --path ~/Music
+    musicaudit rules --show- config --path ~/Music
 ```
 
 ### if there is a particular rule you want to investigate in detail, you can run it:
