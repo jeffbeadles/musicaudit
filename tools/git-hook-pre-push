@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+## musicaudit pre-push git check script
+## This script makes sure that the project check-in requirements
+##  have been met.
+#
+
+for pre_check in \
+  "python3 -m ruff check" \
+  "python3 -m ruff format --check" \
+  "python3 -m pytest"
+do
+   echo "RUN: $pre_check"
+   $pre_check
+   ERR="$?"
+   if [ "$ERR" -ne 0 ]; then
+      echo "ERROR: $pre_check failed, exited $ERR" >&2
+      echo "Unable to proceed until the errors above are resolved." >&2
+      exit "$ERR"
+   fi
+done
+
