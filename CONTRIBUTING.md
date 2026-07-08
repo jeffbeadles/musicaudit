@@ -41,12 +41,11 @@ Those are encouraged as separate tools.
 
 Read docs/philosophy.md before making any changes.
 
-Before any push request, a regression test must be added for any new or changed
-functionality.
+See requirements-dev.txt for packages required for development.
 
-Also, the command ./tools/hooks/pre-push must be run and pass without warnings
-or errors before pushing to github.  This checks formatting, code,
-and regression tests.
+Before any push request, a regression test must be added for any new or changed functionality.
+
+Also, the command ./tools/hooks/pre-push must be run and pass without warnings or errors before pushing to github.  This checks formatting, code, and regression tests.
 
 Note, that these are also run as part of github's CI flow, and are not optional.
 
