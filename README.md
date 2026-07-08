@@ -1,5 +1,15 @@
 # musicaudit
 
+musicaudit is a read-only validation tool for your digital music collection.
+
+It helps identify missing metadata, duplicate tracks, inconsistent tagging, and unintended changes without ever modifying your music files.
+
+Who is musicaudit for?
+
+* People who maintain large music collections.
+* Users who edit metadata with tools like Apple Music, Fusion, MusicBrainz Picard, Mp3tag, Kid3, etc.
+* Anyone who wants confidence that metadata changes didn't introduce unexpected changes.
+
 You've spent years curating your music collection. You trust the tools you use, but mistakes happen. musicaudit helps you verify the health of your collection, detect unintended changes and missing metadata, and maintain confidence in it - all without ever modifying your collection."
 
 musicaudit will scan your collection, either by scanning a directory structure with music files, or an iTunes Library.xml file.
