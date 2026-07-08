@@ -2,18 +2,19 @@
 
 You've spent years curating your music collection. You trust the tools you use, but mistakes happen. musicaudit helps you verify the health of your collection, detect unintended changes and missing metadata, and maintain confidence in it - all without ever modifying your collection."
 
-musicaudit can scan your collection, either by scanning a directory structure with music files, or an iTunes Library.xml file.
+musicaudit will scan your collection, either by scanning a directory structure with music files, or an iTunes Library.xml file.
 
 It can generate reports of missing metadata like alburm artists, artwork, or lyrics.  It can also do things like finding duplicate tracks, files with low bitrates, missing files, and much more.
 
-By default, these reports are in human-readable format, but with the --format json
-flag will be output in json so they can be processed by other programs.
+These reports are available in human-readable format or JSON, so they can be
+processed by other programs.
 
 Musicaudit is not a music player, tag editor, or library manager.
 It is an audit and quality assurance tool, and will never change your collection.
 
 musicaudit deliberately separates diagnosis from treatment.  It just reports facts.
 
+----------------------
 
 How to run musicaudit?
 
@@ -40,7 +41,7 @@ musicaudit health --help
 - [FAQ](FAQ.md)
 - [License](LICENSE-2.0)
 - [Philosophy](docs/philosophy.md)
-- [Development History](development-history.md)
+- [Development History](docs/development-history.md)
 - [Contributing](CONTRIBUTING.md)
 
 
