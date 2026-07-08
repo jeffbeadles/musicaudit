@@ -9,9 +9,15 @@
 # Library
 # ----------------------------------------------------------------------
 
+# Default filesystem root.
+# This path is used by default if --path is specified with no argument
+# Can always be overridden with --path /path/to/music_collection
+music_root: ~/Music
+
 # Default Apple Music/iTunes XML export.
-# Can always be overridden with --xml.
-apple_library_xml: ~/Music/AppleMusic/Library.xml
+# This path is used by default if --apple-library is specified with no argument
+# Can always be overridden with --apple-library /path/to/Library.xml
+apple_library: ~/Music/AppleMusic/Library.xml
 
 # ----------------------------------------------------------------------
 # General Options
@@ -37,20 +43,28 @@ max_details: 25
 known_tokens:
   - LIVE
   - DEMO
-  - REMASTER
+
+# ----------------------------------------------------------------------
+# Rule Configuration
+# ----------------------------------------------------------------------
 
 # Optional list of rules enabled by default.
 # If omitted, all rules are enabled.
 #
 # enabled_rules:
+#   - duplicate-track
+#   - empty-standard-playlist
+#   - invalid-rating
+#   - low-bitrate
+#   - missing-album-artist
+#   - missing-artwork
+#   - missing-files
+#   - missing-lyrics
 #   - missing-rating
 #   - unknown-token
-#   - duplicate-track
-#   - low-bitrate
-
-# ----------------------------------------------------------------------
-# Rule Configuration
-# ----------------------------------------------------------------------
+#   - unreadable-file
+#   - xml-tag-mismatch
+# ...
 
 rules:
 
@@ -81,15 +95,18 @@ rules:
     allowed:
       - LIVE
       - DEMO
-      - REMASTER
 
     level: WARN
 
   # ------------------------------------------------------------
-  # Tracks missing an S1-S5 rating.
+  # Tracks missing an S1-S5 rating token.
+  # This is a method that some people use in the comments to
+  #  Store rating information, so it can be saved outside of the
+  #  iTunes environment.  If enabled, then this token must be
+  #  set for each file in the music collection
   # ------------------------------------------------------------
   missing-rating:
-    enabled: true
+    enabled: false
     level: ERROR
 
   # ------------------------------------------------------------
@@ -136,4 +153,5 @@ rules:
 #
 # The effective configuration can be displayed with:
 #
-#   musicaudit rules --show-config
+#   musicaudit rules --show-config (--path || --apple-library)
+#
