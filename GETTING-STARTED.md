@@ -12,7 +12,7 @@ and you can verify it's installed properly by running:
 ```
 
 ## You can save default options in ~/.config/musicaudit/config.yaml.  An example is
-located at [Example configuration file] [examples/config.sample.yaml]
+located at [Example configuration file](file=examples/config.sample.yaml)
 
 
 ## How to access your music collection; Two ways, Apple iTunes Library.xml and on disk
