@@ -18,3 +18,10 @@ This experience led directly to the creation of the snapshot and diff commands. 
 
 Many of these issues would not have been discovered without the
 validation rules implemented by musicaudit.
+
+Also, originally musicaudit was only used by referencing the Library.xml file exported by iTunes.  This revealed a pretty substantial issue as iTunes does not store a lot of the metadata in the music files, but rather in internal databases.  This lead to the addition of an abstraction of data "providers", currently "apple-library" for iTunes, and "path" for reading the metadata directly from music files.
+
+In the future, providers could be added for other environments, like beets, jellyfin, and others.
+
+The future will be driven by the needs of users, balanced by the core and guiding principles of musicaudit.
+
