@@ -21,18 +21,23 @@ How to run musicaudit?
 Installation and how to run information is in GETTING-STARTED.md, but a quick
 example is:
 
-
+```
 musicaudit health --path ~/Music
 or
 musicaudit health --apple-music ~/Music/Library.xml
+```
 
 To see all available commands:
 
+```
 musicaudit --help
+```
 
 To see all options for a sub command, health for example:
 
+```
 musicaudit health --help
+```
 
 
 ## Documentation
