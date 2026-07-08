@@ -26,12 +26,8 @@ def append_track(lines, t, prefix="-"):
     )
 
 
-def append_details(lines, core, low_bitrate: int, max_details: int, playlists=None):
-    if max_details <= 0:
-        lines.append("Detailed listings suppressed because `--max-details 0` was used.")
-        lines.append("")
-        return
-
+# token count report
+def append_token_details(lines, core, max_details: int):
     if core["unknown_token_counts"]:
         lines.append(f"### Most Common Unknown Comment Tokens, Top {max_details}")
         lines.append("")
@@ -39,12 +35,20 @@ def append_details(lines, core, low_bitrate: int, max_details: int, playlists=No
             lines.append(f"- `{tok}`: {fmt_int(count)}")
         lines.append("")
 
+
+# Unrated track report
+def append_unrated_track_details(lines, core, max_details: int):
+
     if core["unrated_tracks"][:max_details]:
         lines.append(f"### First {max_details} Unrated Tracks")
         lines.append("")
         for t in core["unrated_tracks"][:max_details]:
             append_track(lines, t)
         lines.append("")
+
+
+# Low bit-rate report
+def append_lowbitrate_details(lines, core, low_bitrate: int, max_details: int):
 
     if core["low_bitrate_tracks"][:max_details]:
         lines.append(
@@ -66,6 +70,10 @@ def append_details(lines, core, low_bitrate: int, max_details: int, playlists=No
             )
         lines.append("")
 
+
+# Invalid track report
+def append_invalidtrack_details(lines, core, max_details: int):
+
     if core["invalid_tracks"][:max_details]:
         lines.append(f"### First {max_details} Invalid Rating Token Tracks")
         lines.append("")
@@ -74,6 +82,10 @@ def append_details(lines, core, low_bitrate: int, max_details: int, playlists=No
                 f"- {t.get('artist', '')} - {t.get('name', '')}: `{t.get('comments')}`"
             )
         lines.append("")
+
+
+# Duplicate Artist/Album/Title groups
+def append_duplicate_aat_details(lines, core, max_details: int):
 
     if core["duplicates"][:max_details]:
         lines.append(f"### First {max_details} Duplicate Artist/Album/Title Groups")
@@ -84,6 +96,10 @@ def append_details(lines, core, low_bitrate: int, max_details: int, playlists=No
                 f"- {sample.get('artist', '')} - {sample.get('album', '')} - {sample.get('name', '')}: {len(group)} copies"
             )
         lines.append("")
+
+
+# Tag mismatch report
+def append_tag_mismatch_details(lines, core, max_details: int):
 
     if core.get("tag_mismatches") and core["tag_mismatches"][:max_details]:
         lines.append(f"### First {max_details} XML/File Tag Mismatches")
@@ -217,7 +233,12 @@ def summary_report(
             "",
         ]
 
-    append_details(lines, core, low_bitrate, max_details, library.playlists)
+    append_token_details(lines, core, max_details)
+    append_unrated_track_details(lines, core, max_details)
+    append_lowbitrate_details(lines, core, low_bitrate, max_details)
+    append_invalidtrack_details(lines, core, max_details)
+    append_duplicate_aat_details(lines, core, max_details)
+    append_tag_mismatch_details(lines, core, max_details)
     return "\n".join(lines)
 
 
@@ -283,7 +304,7 @@ def tokens_report(library, core, max_details: int) -> str:
         f"- FAV: {fmt_int(core['favorites'])} ({fmt_percent(core['favorites'], total)})"
     )
     lines.append("")
-    append_details(lines, core, 256, max_details)
+    append_token_details(lines, core, max_details)
     return "\n".join(lines)
 
 
