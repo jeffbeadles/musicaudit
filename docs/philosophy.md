@@ -1,10 +1,6 @@
 # musicaudit Philosophy
 
-`musicaudit` exists to provide objective information about the state of a music collection. It intentionally avoids making decisions for the user. The goal is to enable informed, data-driven decisions, not to automate them.
-
-musicaudit is a read-only validation engine for digital music collections.
-
-Its purpose is to determine the health of a music collection and report its findings completely and accurately.
+`musicaudit` exists to provide objective, factual information about the state of a music collection. It intentionally avoids making decisions for the user. The goal is to enable informed, data-driven decisions, not to automate them.
 
 It intentionally does not modify collections. Instead, it provides stable human-readable and machine-readable output that can be consumed by other software.
 
@@ -13,7 +9,6 @@ It reduces the cost and complexity of maintaining a high-quality music collectio
 A collection should be easy to validate at any time. By making problems inexpensive to find, users can focus their effort on correcting them rather than discovering them.
 
 It deliberately separates diagnosis from treatment.
-
 
 It is not a music player.
 It is not a tag editor.
@@ -68,7 +63,7 @@ filesystem (--path) . Both are simply providers, used read-only for informatoin.
 Future providers may include:
 
 - beets databases
-- MusicBrainz/Picard metadata
+- Jellyfin
 - other music library exports
 
 The rule engine should not care where the library model came from.
@@ -85,7 +80,8 @@ Rules answer questions such as:
 - Is artwork embedded?
 - Do embedded tags agree with the exported library?
 
-Rules should report problems clearly.
+Rules should report problems clearly, however rules are optional.  All users may
+not want to run all of the rules.
 
 They should not fix them.
 
@@ -101,11 +97,11 @@ Analysis
 Result objects
    |
 Renderers
-   |-- terminal
+   |-- terminal/markdown
    |-- json
 ```
 
-JSON is the primary machine-readable format.
+JSON is the machine-readable format.
 
 Terminal output should be optimized for humans.
 
@@ -119,6 +115,7 @@ Every bug found in early development had a test created for it, including
 - verify alias missing parser options
 - over-aggressive refactor changing `set_defaults`
 - empty Smart Playlists being treated as errors
+- And many others.
 
 These should never reappear silently.
 
@@ -128,21 +125,15 @@ Avoid cleverness when plain code will do.
 
 A rule should be easy to read, easy to test, and easy to delete.
 
-Simple modules are better than large central files.
+Rules are optional.  Rules to run can be listed in the user config file.
+
+Simple modules are better than large monolithic files.
 
 Small result objects are better than parsing formatted text.
 
 Explicit configuration is better than hidden behavior.
 
-### 8. Delete bad abstractions early
-
-A working implementation is not necessarily a good implementation.
-
-If the architecture is fragile, replace it before other code depends on it.
-
-It is better to discard a bad approach early than to support it forever.
-
-### 9. Reports should emphasize exceptions
+### 8. Reports should emphasize exceptions
 
 Large curated libraries can contain tens of thousands of tracks.
 
@@ -156,7 +147,7 @@ What changed?
 What needs attention?
 ```
 
-### 10. The tool should support long-lived collections
+### 9. The tool should support long-lived collections
 
 Digital music collections often live for decades.
 
@@ -187,11 +178,7 @@ If the intent is not obvious, improve the design before adding comments.
 
 ## Build from demonstrated need
 
-New features should be driven by repeated real-world use.
-
-Interesting ideas are recorded.
-
-Repeated pain points are implemented.
+New features should be driven by real-world use and need.
 
 The existence of an idea is not sufficient reason to add it.
 
@@ -215,11 +202,11 @@ It should help users understand the state of their collection before syncing, ba
 
 ## Non-Goals
 
-`musicaudit` will not try to become:
+`musicaudit` will never become:
 
 - a music player
 - a streaming client
-- a tag editor
+- a tag/metadata editor
 - an album art downloader
 - a lyrics downloader
 - a ripper
@@ -239,11 +226,3 @@ Does this help the user validate, understand, preserve, or safely compare a cura
 ```
 
 If not, it probably belongs somewhere else.
-
-## Project Motto
-
-```text
-Trust the files.
-Verify everything.
-Change nothing unless explicitly told to.
-```
