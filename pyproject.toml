@@ -4,11 +4,24 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "musicaudit"
-version = "0.99.6"
+version = "0.99.7"
 description = "Read-only validation tool for digital music collections"
+classifiers = [
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Utilities",
+    "Intended Audience :: End Users/Desktop",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: Apache Software License",
+    "Natural Language :: English",
+
+]
 readme = "README.md"
 requires-python = ">=3.10"
 license = "Apache-2.0"
+license-files = ["LICENSE-*"]
 authors = [
   { name = "Jeff Beadles" }
 ]
