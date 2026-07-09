@@ -4,13 +4,15 @@ import datetime as dt
 import math
 import collections
 
-from .. import __version__
+from importlib.metadata import version
 from ..analysis import bitrate_label, bitrate_bucket
 from ..rules.engine import rules_have_failures
 from ..util.formatting import fmt_int, fmt_percent
 
 
 def header(title: str, xml_path=None) -> list[str]:
+    __version__ = version("musicaudit")
+
     lines = [f"# {title}", ""]
     lines.append(f"Generated: {dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     if xml_path:

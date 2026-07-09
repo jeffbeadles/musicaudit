@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import argparse
+from importlib.metadata import version
+
 import sys
 
-from . import __version__
 from .commands import (
     health,
     summary,
@@ -19,6 +20,7 @@ from .commands import (
 
 
 def build_parser() -> argparse.ArgumentParser:
+    __version__ = version("musicaudit")
     parser = argparse.ArgumentParser(
         prog="musicaudit",
         description="Read-only music library QA toolkit for curated digital music collections.",
