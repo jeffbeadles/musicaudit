@@ -77,7 +77,7 @@ def rules_json_report(library, rules, fail_warnings: bool) -> tuple[str, int]:
 
     payload = {
         "status": "FAIL" if failed else "PASS",
-        "apple_library": str(library.xml_path),
+        "library": str(library.xml_path),
         "summary": {
             "rules": len(rules),
             "failed": sum(
