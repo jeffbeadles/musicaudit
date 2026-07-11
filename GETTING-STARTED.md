@@ -2,9 +2,9 @@
 
 Notice: musicaudit treats your data as completely read-only. It will never write to, or change your data.
 
-### How to install:
+### How to install from Pypi
 ```console
-    pip install musicaudit*.whl
+    pip install musicaudit
 ```
 and you can verify it's installed properly by running:
 ```console
@@ -39,7 +39,7 @@ located at [Example configuration file](examples/config.sample.yaml)
 
 ### To see all available rules, run:
 ```console
-    musicaudit rules --show- config --path ~/Music
+    musicaudit rules --show-config --path ~/Music
 ```
 
 ### if there is a particular rule you want to investigate in detail, you can run it:

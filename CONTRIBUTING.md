@@ -39,6 +39,10 @@ Those are encouraged as separate tools.
 
 ### Coding standards, requirements, and norms
 
+Once the git repository is cloned, it is recommended that the hooks directory is
+properly configured.  If not, your commit may fail when pushed to github.
+git config core.hooksPath `pwd`/tools/hooks
+
 Read docs/philosophy.md before making any changes.
 
 See requirements-dev.txt for packages required for development.
@@ -48,4 +52,7 @@ Before any push request, a regression test must be added for any new or changed 
 Also, the command ./tools/hooks/pre-push must be run and pass without warnings or errors before pushing to github.  This checks formatting, code, and regression tests.
 
 Note, that these are also run as part of github's CI flow, and are not optional.
+
+User-contributed scripts may be placed in contrib/ . They must contain information
+on what they do, how to use them, and who to contact with questions or issues.
 
