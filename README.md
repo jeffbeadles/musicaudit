@@ -54,6 +54,7 @@ musicaudit health --help
 
 - [Getting Started](GETTING-STARTED.md)
 - [FAQ](FAQ.md)
+- [Roadmap](ROADMAP.md)
 - [License](LICENSE-2.0)
 - [Philosophy](docs/philosophy.md)
 - [Development History](docs/development-history.md)
