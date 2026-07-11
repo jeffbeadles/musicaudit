@@ -111,6 +111,9 @@ def load_library(args) -> Library:
     if not xml_path.exists():
         raise RuntimeError(f"XML file not found: {xml_path}")
 
+    if xml_path.is_dir():
+        raise RuntimeError(f"XML file needs to be a file, not a directory: {xml_path}")
+
     plist = read_plist(xml_path)
     tracks = extract_tracks(plist)
     playlists = extract_playlists(plist)
