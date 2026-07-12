@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "musicaudit"
-version = "1.0.0"
+version = "1.0.1"
 description = "Read-only validation tool for digital music collections"
 classifiers = [
     "Topic :: Multimedia :: Sound/Audio",
@@ -18,7 +18,7 @@ classifiers = [
 
 ]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 license = "Apache-2.0"
 license-files = ["LICENSE-*"]
 authors = [
