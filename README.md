@@ -53,7 +53,7 @@ musicaudit health --help
 ## Documentation
 
 - [Getting Started](GETTING-STARTED.md)
-- [Changes](CHANGES.txt)
+- [Changes](CHANGES.md)
 - [FAQ](FAQ.md)
 - [Roadmap](ROADMAP.md)
 - [License](LICENSE-2.0)
