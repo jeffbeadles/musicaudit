@@ -43,6 +43,9 @@ def run_rules(
         configured = config.get("enabled_rules")
         selected = configured if configured else sorted(classes.keys())
 
+    disabled_rules = config.get("disabled_rules") or []
+    selected = sorted(rule for rule in selected if rule not in disabled_rules)
+
     results = []
     for rule_id in selected:
         cls = classes.get(rule_id)
