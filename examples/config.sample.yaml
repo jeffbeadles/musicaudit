@@ -48,6 +48,10 @@ known_tokens:
 # Rule Configuration
 # ----------------------------------------------------------------------
 
+# Note: Unless you only want a small subset of explicit rules to be run, it is best
+# to leave enabled_rules commented out, and only use disabled_rules.
+# This way, as new rules are added to musicaudit, they will be checked.
+#
 # Optional list of rules enabled by default.
 # If omitted, all rules are enabled.
 #
@@ -65,6 +69,13 @@ known_tokens:
 #   - unreadable-file
 #   - xml-tag-mismatch
 # ...
+
+# Optional list of rules to be disabled. (Many users will want to disable these)
+# disabled_rules:
+#   - invalid-rating
+#   - missing-rating
+#   - unknown-token
+#
 
 rules:
 
