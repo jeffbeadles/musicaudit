@@ -6,6 +6,7 @@ class MissingRatingRule(Rule):
     id = "missing-rating"
     level = "ERROR"
     description = "Tracks missing S# rating token"
+    long_description = "Songs that do not have S# comment tokens"
 
     def run(self, library, core):
         return RuleResult(self.id, self.level, self.description, core["unrated_tracks"])

@@ -6,6 +6,7 @@ class MissingFilesRule(Rule):
     id = "missing-files"
     level = "ERROR"
     description = "XML references files that do not exist"
+    long_description = "XML references in iTunes to files that do not exist"
 
     def run(self, library, core):
         return RuleResult(self.id, self.level, self.description, core["file_missing"])

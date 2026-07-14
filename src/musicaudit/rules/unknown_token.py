@@ -6,6 +6,7 @@ class UnknownTokenRule(Rule):
     id = "unknown-token"
     level = "WARN"
     description = "Unknown comment tokens"
+    long_description = "Songs with unknown data in the comment field"
 
     def run(self, library, core):
         items = [

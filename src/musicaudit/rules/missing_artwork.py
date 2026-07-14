@@ -6,6 +6,7 @@ class MissingArtworkRule(Rule):
     id = "missing-artwork"
     level = "WARN"
     description = "Tracks missing embedded artwork"
+    long_description = "Songs that do not have artwork embedded"
     requires_scan_files = True
 
     def run(self, library, core):

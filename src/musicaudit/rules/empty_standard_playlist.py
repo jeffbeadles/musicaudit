@@ -6,6 +6,7 @@ class EmptyStandardPlaylistRule(Rule):
     id = "empty-standard-playlist"
     level = "WARN"
     description = "Empty standard playlists"
+    long_description = "Standard iTunes playlists that have no songs"
 
     def run(self, library, core):
         # Empty smart playlists are not errors. They are often validation checks.

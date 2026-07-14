@@ -10,6 +10,7 @@
         disabled_rules removes listed rules from the selection (deny list)
         The resulting rule set is evaluated
 
+##   Added musicaudit rules --show-rules command, to show rules & description
 ##   Added homebrew release to the roadmap
 ##   Added CHANGES.md to the README, and Pypi release page
 

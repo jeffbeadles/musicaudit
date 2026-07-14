@@ -3,13 +3,20 @@ from __future__ import annotations
 from .common import add_common_args, add_detail_args, apply_settings, load_library
 from ..providers.audio import require_mutagen
 from ..analysis import audit_core
-from ..rules.engine import run_rules, find_rules
+from ..rules.engine import run_rules, find_rules, rule_long_descriptions
 from ..reports.markdown import rules_report
 from ..reports.json import rules_json_report
 from ..util.formatting import write_or_print
 
 
 def run(args) -> int:
+    if getattr(args, "show_rules", False):
+        print("Rules and a description of what they do")
+        for key, value in rule_long_descriptions().items():
+            print(f"{key:<20}: {value}")
+
+        return 0
+
     if args.scan_files:
         require_mutagen()
     library = load_library(args)
@@ -18,6 +25,7 @@ def run(args) -> int:
     args = apply_settings(args, library)
     enabled_rules = args.rule or library.config.get("enabled_rules")
     if getattr(args, "show_config", False):
+        print("Warning - This option is deprecated and will be going away")
         print(f"Library={library.xml_path}")
         print(f"low_bitrate={args.low_bitrate}")
         print(f"low_bitrate_source={getattr(args, 'low_bitrate_source', 'default')}")
@@ -59,9 +67,14 @@ def register(sub):
     p.add_argument("--fail-warnings", action="store_true")
     p.add_argument("--rule", action="append")
     p.add_argument(
+        "--show-rules",
+        action="store_true",
+        help="Show all rules and exit.",
+    )
+    p.add_argument(
         "--show-config",
         action="store_true",
-        help="Show resolved configuration and exit.",
+        help="Show resolved configuration and exit (deprecated).",
     )
     p.add_argument(
         "--format",

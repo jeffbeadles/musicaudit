@@ -6,6 +6,7 @@ class MissingAlbumArtistRule(Rule):
     id = "missing-album-artist"
     level = "WARN"
     description = "Albums with multiple artists but no Album Artist"
+    long_description = "Albums with multiple artists, missing album_artist tag"
 
     def run(self, library, core):
         problems = []

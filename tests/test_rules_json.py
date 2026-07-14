@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import re
 
 from musicaudit.cli import main
 
@@ -50,3 +51,25 @@ def test_verify_json_is_valid(capsys):
     assert code == 0
     payload = json.loads(captured.out)
     assert payload["rules"][0]["id"] == "missing-album-artist"
+
+
+# Make sure that all of the long_descriptions resolve.
+def test_show_rules(capsys):
+    code = main(
+        [
+            "rules",
+            "--show-rules",
+            "--apple-library",
+            str(FIXTURE),
+        ]
+    )
+    captured = capsys.readouterr()
+    missing_ldescriptions = re.findall(
+        r"^(.*): None$", captured.out, flags=re.MULTILINE
+    )
+
+    assert code == 0
+    assert captured.err == ""
+    assert not missing_ldescriptions, (
+        f"Found multiple items missing values: {missing_ldescriptions}"
+    )

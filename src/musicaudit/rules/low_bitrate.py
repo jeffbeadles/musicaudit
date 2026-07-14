@@ -6,6 +6,7 @@ class LowBitrateRule(Rule):
     id = "low-bitrate"
     level = "WARN"
     description = "Tracks below configured bitrate threshold"
+    long_description = "Tracks that have bitrates below configured threshold"
 
     def run(self, library, core):
         threshold = int(

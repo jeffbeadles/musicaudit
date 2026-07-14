@@ -17,6 +17,20 @@ def rule_config(
     return merged
 
 
+# Get long descriptions for all rules
+def rule_long_descriptions():
+
+    classes = discover_rules()
+    ruledata = {}
+
+    for rule_id in classes:
+        rdata = classes.get(rule_id)
+        long_desc = getattr(rdata, "long_description", False) or None
+        ruledata[rule_id] = long_desc
+
+    return ruledata
+
+
 # Get unfiltered list of all rules, for help/usage
 def find_rules(library):
     classes = discover_rules()

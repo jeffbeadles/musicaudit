@@ -6,6 +6,7 @@ class MissingLyricsRule(Rule):
     id = "missing-lyrics"
     level = "WARN"
     description = "Tracks missing embedded lyrics"
+    long_description = "Songs that do not have lyrics embedded in them"
     requires_scan_files = True
 
     def run(self, library, core):
