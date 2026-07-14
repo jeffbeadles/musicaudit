@@ -1,5 +1,5 @@
 
-# Version 1.0.2 (PENDING RELEASE)
+# Version 1.0.2 (2026.07.13)
 
 ##   Change for issue #4, allow rules to be disabled in config file
 ###   Rule selection criteria:
