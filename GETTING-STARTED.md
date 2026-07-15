@@ -11,6 +11,13 @@ and you can verify it's installed properly by running:
     musicaudit --help
 ```
 
+### How to install from homebrew (Mac)
+```console
+    brew tap jeffbeadles/musicaudit
+    brew trust jeffbeadles/musicaudit
+    brew install musicaudit
+```
+
 ## You can save default options in ~/.config/musicaudit/config.yaml.  An example is
 located at [Example configuration file](examples/config.sample.yaml)
 

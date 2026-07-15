@@ -11,7 +11,7 @@
         The resulting rule set is evaluated
 
 ##   Added musicaudit rules --show-rules command, to show rules & description
-##   Added homebrew release to the roadmap
+##   Added support for installing via homebrew
 ##   Added CHANGES.md to the README, and Pypi release page
 
 ---
