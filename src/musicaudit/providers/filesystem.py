@@ -124,17 +124,30 @@ def extract_tags(audio: Any) -> Dict[str, str]:
     return out
 
 
-def has_lyrics(audio: Any) -> bool:
+def find_lyrics(audio: Any) -> str:
     tags = audio.tags
     if not tags:
-        return False
+        return None
     keys = [str(k) for k in tags.keys()]
-    return any(
-        k.startswith("USLT")
-        or k.lower() in {"©lyr", "lyrics", "unsyncedlyrics"}
-        or "lyrics" in k.lower()
-        for k in keys
+
+    return tags.get(
+        next(
+            (
+                k
+                for k in keys
+                if k.startswith("USLT")
+                or k.lower() in {"©lyr", "lyrics", "unsyncedlyrics"}
+                or "lyrics" in k.lower()
+            ),
+            None,
+        )
     )
+
+
+def has_lyrics(audio: Any) -> bool:
+
+    lyric_state = find_lyrics(audio)
+    return lyric_state is not None
 
 
 def has_artwork(audio: Any) -> bool:
@@ -183,6 +196,7 @@ def read_track(path: Path, root: Path, index: int) -> Dict[str, Any]:
         "total_time": None,
         "filesystem_provider": True,
         "audio_readable": False,
+        "embedded_lyrics": None,
         "embedded_has_lyrics": False,
         "embedded_has_artwork": False,
     }
@@ -211,6 +225,7 @@ def read_track(path: Path, root: Path, index: int) -> Dict[str, Any]:
         if length:
             track["total_time"] = int(round(length * 1000))
 
+    track["embedded_lyrics"] = find_lyrics(audio)
     track["embedded_has_lyrics"] = has_lyrics(audio)
     track["embedded_has_artwork"] = has_artwork(audio)
     return track

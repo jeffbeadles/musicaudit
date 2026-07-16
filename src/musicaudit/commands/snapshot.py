@@ -37,6 +37,7 @@ def snapshot_track(track: dict, root: Path | None = None) -> dict:
             "size": track.get("size"),
             "sample_rate": track.get("sample_rate"),
             "total_time": track.get("total_time"),
+            "embedded_lyrics": track.get("embedded_lyrics"),
             "embedded_has_lyrics": track.get("embedded_has_lyrics"),
             "embedded_has_artwork": track.get("embedded_has_artwork"),
             "audio_readable": track.get("audio_readable"),
