@@ -6,6 +6,7 @@
 ### Added README.md to the contrib/ directory
 ### Changes for links in README.md and pyproject.toml so they'll work on pypi
 ### Updated roadmap for disabled_rules and homebrew changes completed.
+### Added support for .json.gz input in musicaudit diff --old/--new
 
 
 # Version 1.0.2 (2026.07.13)
