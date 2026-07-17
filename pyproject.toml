@@ -42,5 +42,6 @@ Documentation = "https://github.com/jeffbeadles/musicaudit"
 Repository = "https://github.com/jeffbeadles/musicaudit"
 Issues = "https://github.com/jeffbeadles/musicaudit/issues"
 Discussions = "https://github.com/jeffbeadles/musicaudit/discussions"
-Changes = "https://github.com/jeffbeadles/musicaudit/CHANGES.md"
+Changes = "https://jeffbeadles.github.io/musicaudit/CHANGES.md"
+FAQ = "https://jeffbeadles.github.io/musicaudit/FAQ.md"
 

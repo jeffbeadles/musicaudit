@@ -52,13 +52,13 @@ musicaudit health --help
 
 ## Documentation
 
-- [Getting Started](GETTING-STARTED.md)
-- [Changes](CHANGES.md)
-- [FAQ](FAQ.md)
-- [Roadmap](ROADMAP.md)
-- [License](LICENSE-2.0)
-- [Philosophy](docs/philosophy.md)
-- [Development History](docs/development-history.md)
-- [Contributing](CONTRIBUTING.md)
+- [Getting Started](https://jeffbeadles.github.io/musicaudit/GETTING-STARTED.md)
+- [Changes](https://jeffbeadles.github.io/musicaudit/CHANGES.md)
+- [FAQ](https://jeffbeadles.github.io/musicaudit/FAQ.md)
+- [Roadmap](https://jeffbeadles.github.io/musicaudit/ROADMAP.md)
+- [License](https://jeffbeadles.github.io/musicaudit/LICENSE-2.0)
+- [Philosophy](https://jeffbeadles.github.io/musicaudit/docs/philosophy.md)
+- [Development History](https://jeffbeadles.github.io/musicaudit/docs/development-history.md)
+- [Contributing](https://jeffbeadles.github.io/musicaudit/CONTRIBUTING.md)
 
 
