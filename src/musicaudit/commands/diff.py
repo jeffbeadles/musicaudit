@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import collections
 import json
+import gzip
 
 from ..model import analyze_comment_tokens, DEFAULT_KNOWN_TOKENS
 from ..providers.applemusic import read_plist, extract_tracks, extract_playlists
@@ -53,25 +54,30 @@ def read_diff_input(path):
     if not p.exists():
         raise RuntimeError(f"Diff input not found: {p}")
 
-    if p.suffix.lower() == ".json":
-        payload = json.loads(p.read_text(encoding="utf-8"))
-        if payload.get("schema") != "musicaudit.snapshot.v1":
-            raise RuntimeError(f"JSON diff input is not a musicaudit snapshot: {p}")
+    if p.suffix.lower() == ".xml":
+        plist = read_plist(p)
         return {
             "path": p,
-            "kind": "snapshot",
-            "tracks": payload.get("tracks", []) or [],
-            "playlists": payload.get("playlists", []) or [],
-            "payload": payload,
+            "kind": "apple-library",
+            "tracks": extract_tracks(plist),
+            "playlists": extract_playlists(plist),
+            "payload": None,
         }
 
-    plist = read_plist(p)
+    if p.name.lower().endswith(".json.gz"):
+        with gzip.open(p, "rt", encoding="utf-8") as gzin:
+            payload = json.load(gzin)
+    elif p.suffix.lower() == ".json":
+        payload = json.loads(p.read_text(encoding="utf-8"))
+
+    if payload.get("schema") != "musicaudit.snapshot.v1":
+        raise RuntimeError(f"JSON diff input is not a musicaudit snapshot: {p}")
     return {
         "path": p,
-        "kind": "apple-library",
-        "tracks": extract_tracks(plist),
-        "playlists": extract_playlists(plist),
-        "payload": None,
+        "kind": "snapshot",
+        "tracks": payload.get("tracks", []) or [],
+        "playlists": payload.get("playlists", []) or [],
+        "payload": payload,
     }
 
 
