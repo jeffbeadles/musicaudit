@@ -4,6 +4,8 @@
 ### Added support to export embedded lyric data in the snapshots
 ### Added contrib/count_by_artist.py, a utility to display artists ranked by the number of songs in your collection, using the musicaudit snapshot data.
 ### Added README.md to the contrib/ directory
+### Changes for links in README.md and pyproject.toml so they'll work on pypi
+### Updated roadmap for disabled_rules and homebrew changes completed.
 
 
 # Version 1.0.2 (2026.07.13)
