@@ -247,6 +247,7 @@ def load_filesystem_library(args) -> Library:
         raise RuntimeError(f"Music path is not a directory: {root}")
 
     settings = resolve_settings(args, config)
+    settings.provider = "filesystem"
 
     extensions = set(SUPPORTED_EXTENSIONS)
     configured_exts = config.get("filesystem_extensions")

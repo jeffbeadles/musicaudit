@@ -119,6 +119,7 @@ def load_library(args) -> Library:
     playlists = extract_playlists(plist)
 
     settings = resolve_settings(args, config)
+    settings.provider = "apple-library"
 
     return Library(
         xml_path=xml_path,

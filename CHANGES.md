@@ -1,12 +1,13 @@
 
 # Version <TBD>
 
+### Fixed bug where provider name was always "none" in snapshots
 ### Added support to export embedded lyric data in the snapshots
-### Added contrib/count_by_artist.py, a utility to display artists ranked by the number of songs in your collection, using the musicaudit snapshot data.
+### Added support for .json.gz input in musicaudit diff --old/--new
 ### Added README.md to the contrib/ directory
+### Added contrib/count_by_artist.py, a utility to display artists ranked by the number of songs in your collection, using the musicaudit snapshot data.
 ### Changes for links in README.md and pyproject.toml so they'll work on pypi
 ### Updated roadmap for disabled_rules and homebrew changes completed.
-### Added support for .json.gz input in musicaudit diff --old/--new
 
 
 # Version 1.0.2 (2026.07.13)

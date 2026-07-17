@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, Optional
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=False)
 class Settings:
     low_bitrate: int = 256
     low_bitrate_source: str = "default"
@@ -13,6 +13,7 @@ class Settings:
     known_tokens: tuple[str, ...] = ("FAV",)
     enabled_rules: Optional[tuple[str, ...]] = None
     rule_config: Dict[str, Dict[str, Any]] = field(default_factory=dict)
+    provider: str = None
 
 
 def resolve_settings(args, config: Dict[str, Any]) -> Settings:
@@ -74,6 +75,7 @@ def resolve_settings(args, config: Dict[str, Any]) -> Settings:
     enabled = getattr(args, "rule", None) or config.get("enabled_rules")
     enabled_tuple = tuple(enabled) if enabled else None
 
+    provider = "Unknown"
     return Settings(
         low_bitrate=low_bitrate,
         low_bitrate_source=low_bitrate_source,
@@ -82,4 +84,5 @@ def resolve_settings(args, config: Dict[str, Any]) -> Settings:
         known_tokens=tuple(sorted(known)),
         enabled_rules=enabled_tuple,
         rule_config=rules_cfg,
+        provider=provider,
     )
