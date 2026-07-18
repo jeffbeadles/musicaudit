@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "musicaudit"
-version = "1.0.2"
+version = "1.0.3"
 description = "Read-only validation tool for digital music collections"
 classifiers = [
     "Topic :: Multimedia :: Sound/Audio",

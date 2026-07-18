@@ -1,5 +1,5 @@
 
-# Version <TBD>
+# Version 1.0.3 (2026.07.17)
 
 ### Fixed bug where provider name was always "none" in snapshots, and added regression tests
 ### Added support to export embedded lyric data in the snapshots
