@@ -1,7 +1,7 @@
 
 # Version <TBD>
 
-### Fixed bug where provider name was always "none" in snapshots
+### Fixed bug where provider name was always "none" in snapshots, and added regression tests
 ### Added support to export embedded lyric data in the snapshots
 ### Added support for .json.gz input in musicaudit diff --old/--new
 ### Added README.md to the contrib/ directory
