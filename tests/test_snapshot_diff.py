@@ -25,6 +25,7 @@ def test_snapshot_json_from_fixture_is_valid(capsys):
     assert code == 0
     payload = json.loads(captured.out)
     assert payload["schema"] == "musicaudit.snapshot.v1"
+    assert payload["provider"] == "apple-library"
     assert payload["summary"]["tracks"] == 6
     assert len(payload["tracks"]) == 6
 
