@@ -12,6 +12,14 @@ If you have something you would like added, please file an issue on github.
 
 ----------
 
+* snapshot_rating-fav-lyrics-csv.py - Will create a file with rows for each
+music file containing the path, rating, favorite, and optionally lyrics.
+```code
+   musicaudit snapshot --path ~/Music | snapshot_rating-fav-lyrics-csv.py [args]
+```
+There are optional arguments to output in csv, do transformations for plex,
+and include lyrics.
+
 * FILTER_SNAPSHOT_EXAMPLE.sh - Will output a single line per track in your
   collection with the specified metadata you desire, optionally in csv format
 ```code
