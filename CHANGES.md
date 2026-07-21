@@ -2,6 +2,7 @@
 # Version TBD
 
 ### Fixed bug where exported lyric data was not always a string (sometimes a list). It's a string.
+### Added contrib/snapshot_rating-fav-lyrics-csv.py - snapshot consumer for data exporting
 
 
 
