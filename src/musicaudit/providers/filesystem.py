@@ -225,7 +225,12 @@ def read_track(path: Path, root: Path, index: int) -> Dict[str, Any]:
         if length:
             track["total_time"] = int(round(length * 1000))
 
-    track["embedded_lyrics"] = find_lyrics(audio)
+    lyrics_data = find_lyrics(audio)
+
+    if isinstance(lyrics_data, list):
+        lyrics_data = "".join(lyrics_data)
+
+    track["embedded_lyrics"] = lyrics_data
     track["embedded_has_lyrics"] = has_lyrics(audio)
     track["embedded_has_artwork"] = has_artwork(audio)
     return track

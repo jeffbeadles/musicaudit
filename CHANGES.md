@@ -1,4 +1,10 @@
 
+# Version TBD
+
+### Fixed bug where exported lyric data was not always a string (sometimes a list). It's a string.
+
+
+
 # Version 1.0.3 (2026.07.17)
 
 ### Fixed bug where provider name was always "none" in snapshots, and added regression tests
